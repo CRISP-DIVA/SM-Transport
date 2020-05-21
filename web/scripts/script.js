@@ -162,7 +162,23 @@ $(function(){
 		
 		
 	};
-	
+	$('#indata').click(function(){
+		console.log("HAS HECHO CLICK");
+
+		$.ajax({
+                type: "POST",
+                url: "/create_task" ,
+                data: {},
+                success : function(data) { 
+                	console.log(data);
+                    // here is the code that will run on client side after running clear.php on server
+
+                    // function below reloads current pag
+
+                }
+            });
+	});
+
 	$('#enviar').click(function(){
 		let transOptions;
 		if ($('#hora').val().length > 0 && $('#datepicker').val().length > 0){		

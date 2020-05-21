@@ -68,6 +68,10 @@
 						<div class="form-group">
 							<input type="button" id="pintar" class="form-control" value="Pintar Ruta">
 						</div>
+						
+						<div class="form-group">
+							<input type="button" id="indata" class="indata" value="INPUT DATA">
+						</div>
 					</div>
 				</form>
 			</div>

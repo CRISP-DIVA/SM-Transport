@@ -15,6 +15,6 @@ handlers:
 env_variables:
   # Replace USER, PASSWORD, DATABASE, and CONNECTION_NAME with the
   # values obtained when configuring your Cloud SQL instance.
-  MYSQL_DSN: mysql:unix_socket=/cloudsql/ssmm-safe-transportation:europe-west1:ssmm-transport-database;dbname=ssmm-transport-database
-  MYSQL_USER: root
-  MYSQL_PASSWORD: vilariñoputoamoenrobotica2020
+  MYSQL_DSN: "mysql:unix_socket=/cloudsql/ssmm-safe-transportation:europe-west1:ssmm-transport-database;dbname=ssmm-database"
+  MYSQL_USER: "root"
+  MYSQL_PASSWORD: "vilarinyoputoamoenrobotica2020"
