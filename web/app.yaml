@@ -11,3 +11,10 @@ handlers:
 # Serve your app through a front controller at index.php or public/index.php.
 - url: .*
   script: auto
+
+env_variables:
+  # Replace USER, PASSWORD, DATABASE, and CONNECTION_NAME with the
+  # values obtained when configuring your Cloud SQL instance.
+  MYSQL_DSN: mysql:unix_socket=/cloudsql/ssmm-safe-transportation:europe-west1:ssmm-transport-database;dbname=ssmm-transport-database
+  MYSQL_USER: root
+  MYSQL_PASSWORD: vilariñoputoamoenrobotica2020
