@@ -14,6 +14,7 @@
 import requests
 import pandas as pd
 import time
+import sqlalchemy
 # [START gae_python37_app]
 from flask import Flask,render_template
 
@@ -33,12 +34,40 @@ def root():
 
 
 @app.route('/addUser')	
-def inphp():
+def addUser():
     d = {"olat": "1","olng": "1","dlat": "1","dlng": "1","hora": "2000-01-01 00:00:00","mode": "trans","user_id": "2"}
     response = requests.post('https://us-central1-ssmm-safe-transportation.cloudfunctions.net/InsertRuta2', json=d)
     print(response.status_code)
     time.sleep(0.5)
     return 'OK'
+
+@app.route('/addRoute')
+def addRoute():
+    d = {"olat": "1","olng": "1","dlat": "1","dlng": "1","hora": "2000-01-01 00:00:00","mode": "trans","user_id": "2"}
+    response = requests.post('https://us-central1-ssmm-safe-transportation.cloudfunctions.net/InsertRuta2', json=d)
+    print(response.status_code)
+    time.sleep(0.5)
+    return 'OK'
+
+
+@app.route('/getTrams')
+def getTrams():
+    db = sqlalchemy.create_engine(
+        # Equivalent URL:
+        # mysql+pymysql://<db_user>:<db_pass>@/<db_name>?unix_socket=/cloudsql/<cloud_sql_instance_name>
+        sqlalchemy.engine.url.URL(
+            drivername="mysql+pymysql",
+            username="root",
+            password="vilarinyoputoamoenrobotica2020",
+            database="ssmm_database",
+            query={"unix_socket": "/cloudsql/{}".format("ssmm-safe-transportation:europe-west1:ssmm-transport-database")},
+        ),
+        # ... Specify additional properties here.
+        # ...
+    )
+
+
+
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google App

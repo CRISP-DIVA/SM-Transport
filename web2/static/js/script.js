@@ -167,7 +167,7 @@ $(function(){
 	
 		//var d = { name : "Miquel", email : "Miquel@gmail.com" };
         $.ajax({
-                url : "/addUser",
+                url : "/getTrams",
                 //async: false,
                 success : function(response){
                        //codigo de exito
