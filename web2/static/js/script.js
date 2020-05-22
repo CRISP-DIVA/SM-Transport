@@ -164,20 +164,23 @@ $(function(){
 	};
 	$('#indata').click(function(){
 		console.log("HAS HECHO CLICK");
-
-		var d = { name : "Miquel", email : "Miquel@gmail.com" };
+	
+		//var d = { name : "Miquel", email : "Miquel@gmail.com" };
         $.ajax({
                 url : "in.php",
-                type: "GET",
+                type: "POST",
                 //async: false,
                 success : function(response){
                        //codigo de exito
+                       console.log("Good");
                        console.log(response);
                 },
-                error: function(error, status){
+                error: function(response, status, error){
                        //codigo error
-                       console.log(error);
+                       console.log("Bad");
+                       console.log(response);
                        console.log(status);
+					   console.log(error);
                 }
         });
 	});

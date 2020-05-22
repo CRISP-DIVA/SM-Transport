@@ -21,12 +21,16 @@ from flask import Flask,render_template
 app = Flask(__name__)
 
 @app.route('/')
+
 def root():
     # For the sake of example, use static information to inflate the template.
     # This will be replaced with real information in later steps.
-    
-
+   
     return render_template("web/index.php")
+	
+#@app.route('/in.php')	
+#def inphp():
+	#return render_template("web/in.php")
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google App
