@@ -5,17 +5,18 @@
 		<title>Safe Transportation</title>
 		<meta name="viewport" content="initial-scale=1.0">
 		
-		<link rel="stylesheet" href="styles/bootstrap.css">
-		<link rel="stylesheet" href="styles/jquery-ui.css">
-		<link rel="stylesheet" href="styles/jquery-ui.structure.css">
-		<link rel="stylesheet" href="styles/jquery-ui.theme.css">
-		<link rel="stylesheet" href="styles/style.css">
+		<link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.css')}}">
+		<link rel="stylesheet" href="{{url_for('static', filename='css/jquery-ui.css')}}">
+		<link rel="stylesheet" href="{{url_for('static', filename='css/jquery-ui.structure.css')}}">
+		<link rel="stylesheet" href="{{url_for('static', filename='css/jquery-ui.theme.css')}}">
+		<link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
 		
 		
-		<script type="text/javascript" src="scripts/jquery-3.5.1.js"></script>
-		<script type="text/javascript" src="scripts/jquery-ui.min.js"></script>
-		<script type="text/javascript" src="scripts/bootstrap.js"></script>
-		<script type="text/javascript" src="scripts/script.js"></script>
+		<!--<script type="text/javascript" src="scripts/jquery-3.5.1.js"></script>-->
+		<script type="text/javascript" src="{{url_for('static', filename='js/jquery-3.5.1.js')}}"></script>
+		<script type="text/javascript" src="{{url_for('static', filename='js/jquery-ui.min.js')}}"></script>
+		<script type="text/javascript" src="{{url_for('static', filename='js/bootstrap.js')}}"></script>
+		<script type="text/javascript" src="{{url_for('static', filename='js/script.js')}}"></script>
 		<!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAikv_zwmE_upUzXmsC_MGSEgRkzpdkDVU"-->
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEhSk10kykEmIR78FnvzWPYJbNIwTPSKk"
 		async defer></script>

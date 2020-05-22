@@ -1,6 +1,6 @@
 <?php
 global $url;
-
+echo "hola";
 //The Cloud Function's trigger URL
 $url = "https://us-central1-ssmm-safe-transportation.cloudfunctions.net/insertUser";
 $ch = curl_init();
