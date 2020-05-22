@@ -11,7 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import requests
+import pandas as pd
+import time
 # [START gae_python37_app]
 from flask import Flask,render_template
 
@@ -28,9 +30,15 @@ def root():
    
     return render_template("web/index.php")
 	
-#@app.route('/in.php')	
-#def inphp():
-	#return render_template("web/in.php")
+
+
+@app.route('/addUser')	
+def inphp():
+    d = {"olat": "1","olng": "1","dlat": "1","dlng": "1","hora": "2000-01-01 00:00:00","mode": "trans","user_id": "2"}
+    response = requests.post('https://us-central1-ssmm-safe-transportation.cloudfunctions.net/InsertRuta2', json=d)
+    print(response.status_code)
+    time.sleep(0.5)
+    return 'OK'
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google App

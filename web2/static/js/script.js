@@ -167,8 +167,7 @@ $(function(){
 	
 		//var d = { name : "Miquel", email : "Miquel@gmail.com" };
         $.ajax({
-                url : "in.php",
-                type: "POST",
+                url : "/addUser",
                 //async: false,
                 success : function(response){
                        //codigo de exito
@@ -180,7 +179,7 @@ $(function(){
                        console.log("Bad");
                        console.log(response);
                        console.log(status);
-					   console.log(error);
+			console.log(error);
                 }
         });
 	});
