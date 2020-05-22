@@ -15,10 +15,15 @@ import requests
 import pandas as pd
 import time
 import sqlalchemy
+import os
+import pymysql
 # [START gae_python37_app]
 from flask import Flask,render_template
 
-
+db_user = os.environ.get('CLOUD_SQL_USERNAME')
+db_password = os.environ.get('CLOUD_SQL_PASSWORD')
+db_name = os.environ.get('CLOUD_SQL_DATABASE_NAME')
+db_connection_name = os.environ.get('CLOUD_SQL_CONNECTION_NAME')
 # If `entrypoint` is not defined in app.yaml, App Engine will look for an app
 # called `app` in `main.py`.
 app = Flask(__name__)
@@ -52,20 +57,28 @@ def addRoute():
 
 @app.route('/getTrams')
 def getTrams():
-    db = sqlalchemy.create_engine(
-        # Equivalent URL:
-        # mysql+pymysql://<db_user>:<db_pass>@/<db_name>?unix_socket=/cloudsql/<cloud_sql_instance_name>
-        sqlalchemy.engine.url.URL(
-            drivername="mysql+pymysql",
-            username="root",
-            password="vilarinyoputoamoenrobotica2020",
-            database="ssmm_database",
-            query={"unix_socket": "/cloudsql/{}".format("ssmm-safe-transportation:europe-west1:ssmm-transport-database")},
-        ),
-        # ... Specify additional properties here.
-        # ...
-    )
 
+    if os.environ.get('GAE_ENV') == 'standard':
+        # If deployed, use the local socket interface for accessing Cloud SQL
+        unix_socket = '/cloudsql/{}'.format(db_connection_name)
+        cnx = pymysql.connect(user=db_user, password=db_password,
+                              unix_socket=unix_socket, db=db_name)
+    else:
+        # If running locally, use the TCP connections instead
+        # Set up Cloud SQL Proxy (cloud.google.com/sql/docs/mysql/sql-proxy)
+        # so that your application can use 127.0.0.1:3306 to connect to your
+        # Cloud SQL instance
+        host = '127.0.0.1'
+        cnx = pymysql.connect(user="root", password="vilarinyoputoamoenrobotica2020",
+                              host=host, db="ssmm_database")
+
+    with cnx.cursor() as cursor:
+        cursor.execute('SELECT * from rutas;')
+        result = cursor.fetchall()
+        current_time = result[0][0]
+        print(result)
+    cnx.close()
+    return 'OK'
 
 
 
