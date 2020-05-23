@@ -164,11 +164,15 @@ $(function(){
 	};
 	$('#indata').click(function(){
 		console.log("HAS HECHO CLICK");
+		
+		asyncChange();
 	
+		//$.get('in.php', (r) => console.log(r));
 		//var d = { name : "Miquel", email : "Miquel@gmail.com" };
-        $.ajax({
-                url : "/getTrams",
-                //async: false,
+        /*$.ajax({
+                url : "in.php",
+                type: "GET",
+                //async: true,
                 success : function(response){
                        //codigo de exito
                        console.log("Good");
@@ -179,10 +183,32 @@ $(function(){
                        console.log("Bad");
                        console.log(response);
                        console.log(status);
-			console.log(error);
+					   console.log(error);
                 }
-        });
+        });*/
 	});
+	
+	function asyncChange(){
+		var request;
+		if(window.XMLHttpRequest){
+			request = new window.XMLHttpRequest();
+		} else {
+			request = new window.AciveXObject("Microsoft.XMLHTTP");
+		}
+		console.log(request);
+		request.open("GET", "https://us-central1-ssmm-safe-transportation.cloudfunctions.net/function-71", true);
+		request.send();
+		console.log(request);
+		request.onreadystatechange = function(){
+			if (request.readyState == 4 && request.status == 200){
+				console.log("OK");
+				console.log(request.responseText);
+			} else {
+				console.log("Error");
+				console.log(request.responseText);
+			}
+		}
+	}
 
 	$('#enviar').click(function(){
 		let transOptions;
@@ -220,15 +246,74 @@ $(function(){
 					travelMode: 'TRANSIT',
 					transitOptions: transOptions,
 				}, callback);
-				
+				console.log(response);
 				await sleep(2000);
 					
-				console.log(response);
+				//console.log(response);
 				$.each(rutasAlternas, function(ind, val){
 					val.setMap(null);
 					val.setPanel(null);
 				});
+				////////////////////////////////////////////////////////
+				let rutaSel = response.routes;
+				let startLoc = rutaSel[0].legs[0].start_location.toString();
+				let endLoc = rutaSel[0].legs[0].end_location.toString();
+				let depTime = rutaSel[0].legs[0].departure_time.text
+				let depTimeHora = parseInt(depTime.split(":")[0]);
+				let depTimeMin = parseInt(depTime.split(":")[1]);
+				let duration = parseInt(rutaSel[0].legs[0].duration.text.split(" ")[0]);
+				//let distance = parseFloat(rutaSel[0].legs[0].distance.text.split(" ")[0]);
+				let lat;
+				let lon;
+				let pathT;// = new Array();
+				let path;
+				let path2;
+				let path3 = [];
 				
+				$.each(rutaSel, function(ind, val){
+					$.each(val, function(ind2, val2){
+						path2 = [];
+						if(ind2 == "legs"){
+							$.each(val2[0].steps, function(ind3, val3){                  // travel_mode + path
+								pathT = new Array();
+								path = new Array();
+								$.each(val3.path, function(ind4, val4){
+									let tmp = val4.toString().split(",");
+									lat = tmp[0].split("(")[1];
+									lng = tmp[1].split(")")[0];
+									let latLng = { "latitud" : lat,
+												   "longitud" : lng };
+									path.push(latLng);
+								});
+								pathT.push({"travel_mode" : val3.travel_mode, "path":path});
+								path2.push(pathT);
+							});
+							path3.push(path2);
+						}
+					});
+				});
+				
+				let route = {
+					"start_location" : startLoc,
+					"end_location" : endLoc,
+					"departure_time" : {
+							"hora" : depTimeHora,
+							"minuts" : depTimeMin,
+							"segos" : 00
+					},
+					"duration" : duration,
+					//"distance" : distance,
+					"steps" : path3
+							
+				}
+				console.log("ROUTE");
+				console.log(route);
+				// A partir de este punto hay que llamar a una función python para ir a la BBDD 
+				// comprobar la densidad por cada tramo o... cada subtramo.
+				// Para acceder a cada una de las ruta iterando la longitud del array step (step.length). 
+				// Para acceder a los tramos de una ruta, iterar sobre la ruta (ex. step[index].)
+				//console.log(route.steps[0][0][0].path);
+				////////////////////////////////////////////////////////
 				rutasAlternas = [];
 				gMarkerOrigen.setMap(null);
 				gMarkerDesti.setMap(null);
@@ -241,43 +326,43 @@ $(function(){
 	//			rutasAlternas.setMap(gMap);
 	//			rutasAlternas.setPanel(document.getElementById('right-panel'));
 				///////////////////////////////////////////////////////////////////
-				for (var i = 0; i < response.routes.length; i++){
-					console.log(response.routes[i]);
-					/*for(var j=0;j < response.routes[i].overview_path.length; j++){
-						//console.log("Coords = "+response.routes[i].overview_path[j].toString());
-						coords.push(response.routes[i].overview_path[j].toString());
-					}		*/			
-					let dist = parseInt(response.routes[i].legs[0].distance.text.split(" ")[0]);
-					console.log(response.routes[i].legs[0].distance.text);
-					console.log(typeof response.routes[i].legs[0].distance.text);
-					console.log(dist);
-					console.log(typeof dist);
-					console.log("minDist + 5 ", minDistancia + 5);
-					console.log("dist > minDistancia + 5" , dist > minDistancia + 5);
-					
-					if(dist < minDistancia + 5){
-						/*rutasAlternas[i] = new google.maps.DirectionsRenderer({
-											directions: response,
-											routeIndex: i,
-										});
-						rutasAlternas[0].setMap(gMap);
-						rutasAlternas[0].setPanel(document.getElementById('right-panel'));*/
-						gDirectionsRenderer = new google.maps.DirectionsRenderer({
-													directions: response,
-													routeIndex: i,
-													//polylineOptions: { visible: false }
-												});
-						rutasAlternas.push(gDirectionsRenderer);
-	
-					}
-					rutasAlternas[0].setMap(gMap);
-					rutasAlternas[0].setPanel(document.getElementById('right-panel'));	
-					//opcion = document.getElementById('adp-listsel');
-				}
-				//pintarRuta();
-			
-				$('#right-panel').css('display', 'block').css('width','33%');
-				$('#map').css('width', '66%');
+	//			for (var i = 0; i < response.routes.length; i++){
+	//				console.log(response.routes[i]);
+	//				/*for(var j=0;j < response.routes[i].overview_path.length; j++){
+	//					//console.log("Coords = "+response.routes[i].overview_path[j].toString());
+	//					coords.push(response.routes[i].overview_path[j].toString());
+	//				}		*/			
+	//				let dist = parseInt(response.routes[i].legs[0].distance.text.split(" ")[0]);
+	//				console.log(response.routes[i].legs[0].distance.text);
+	//				console.log(typeof response.routes[i].legs[0].distance.text);
+	//				console.log(dist);
+	//				console.log(typeof dist);
+	//				console.log("minDist + 5 ", minDistancia + 5);
+	//				console.log("dist > minDistancia + 5" , dist > minDistancia + 5);
+	//				
+	//				if(dist < minDistancia + 5){
+	//					/*rutasAlternas[i] = new google.maps.DirectionsRenderer({
+	//										directions: response,
+	//										routeIndex: i,
+	//									});
+	//					rutasAlternas[0].setMap(gMap);
+	//					rutasAlternas[0].setPanel(document.getElementById('right-panel'));*/
+	//					gDirectionsRenderer = new google.maps.DirectionsRenderer({
+	//												directions: response,
+	//												routeIndex: i,
+	//												//polylineOptions: { visible: false }
+	//											});
+	//					rutasAlternas.push(gDirectionsRenderer);
+	//
+	//				}
+	//				rutasAlternas[0].setMap(gMap);
+	//				rutasAlternas[0].setPanel(document.getElementById('right-panel'));	
+	//				//opcion = document.getElementById('adp-listsel');
+	//			}
+	//			//pintarRuta();
+	//		
+	//			$('#right-panel').css('display', 'block').css('width','33%');
+	//			$('#map').css('width', '66%');
 				
 			} else {
 				console.error('Directions request failed due to ' + status);
@@ -365,12 +450,9 @@ $(function(){
 		
 		console.log("Guardar");
 		let opcion = document.getElementsByClassName('adp-listsel')[0].getAttributeNode('data-route-index').value;		 
-		console.log(opcion);
 		
 		let rutaSel = rutasAlternas[0].directions.routes[opcion].legs;
-		
-		console.log(rutaSel);
-		
+				
 		let startLoc = rutaSel[0].start_location.toString();
 		let endLoc = rutaSel[0].end_location.toString();
 		let depTime = rutaSel[0].departure_time.text
@@ -378,55 +460,35 @@ $(function(){
 		let depTimeMin = parseInt(depTime.split(":")[1]);
 		let duration = parseInt(rutaSel[0].duration.text.split(" ")[0]);
 		let distance = parseFloat(rutaSel[0].distance.text.split(" ")[0]);
-		let path = new Array();
-		let path2 = new Array();
+		let pathT = new Array();
+		let path2 = [];
 		
-		/*$.each(rutaSel[0].steps , function(ind, val){
-			console.log("Idex : ",ind);
-			console.log("Valor : ", val);
-			path[ind]
+		
+		$.each(rutaSel[0].steps , function(ind, val){
+
+			let path = new Array();
 			$.each(val.path, function(ind2, val2){
-				console.log("val2 = ", val2.toString());
-				path[ind]
+				path.push(val2.toString());
 			});
-		});*/
-		
-		/*let route = {
-			start_location : ,
-			end_location : ,
-			departure_time : {
-					hora :
-					minuts :,
-			duration : ,
-			distance : ,
-			steps : [
-						{ 
-							travel_mode : ,
-							path : []
-						}
-					]
-		}*/
-		
-		/*let pool;
-		const createPool = async() => {
-			pool = await mysql.createPool({
-				user: 
-		*/
+			pathT = { "travel_mode" : val.travel_mode, "path":path }
+			path2.push(pathT);
+		});
 		
 		
-		
-		
-		
-		
-		
-		/*let ind = rutasAlternas[0].getRouteIndex();
-		console.log("Printando coordenadas");
-		for( let i =0; i<rutasAlternas[ind].directions.routes[ind].overview_path.length; i++){
-			console.log(rutasAlternas[ind].directions.routes[ind].overview_path[i].toString());
+		let route = {
+			"start_location" : startLoc,
+			"end_location" : endLoc,
+			"departure_time" : {
+					"hora" : depTimeHora,
+					"minuts" : depTimeMin,
+					"segos" : 00
+			},
+			"duration" : duration,
+			"distance" : distance,
+			"steps" : path2
+					
 		}
-		
-		console.log("Hora : ", $('#hora').val());
-		console.log("Dia : ", $('#datepicker').val());*/
+		console.log(route);
 		
 	});
 	
