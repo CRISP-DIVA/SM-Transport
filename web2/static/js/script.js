@@ -165,14 +165,14 @@ $(function(){
 	$('#indata').click(function(){
 		console.log("HAS HECHO CLICK");
 
-		asyncChange();
+		//asyncChange();
 
 		//$.get('in.php', (r) => console.log(r));
 		//var d = { name : "Miquel", email : "Miquel@gmail.com" };
         $.ajax({
                 url : "/addRoute",
                 //async: false,
-		data : d,
+				data : d,
                 success : function(response){
                        //codigo de exito
                        console.log("Good");
@@ -185,10 +185,10 @@ $(function(){
                        console.log(status);
 					   console.log(error);
                 }
-        });*/
+        });
 	});
 
-	function asyncChange(){
+/*	function asyncChange(){
 		var request;
 		if(window.XMLHttpRequest){
 			request = new window.XMLHttpRequest();
@@ -209,6 +209,49 @@ $(function(){
 			}
 		}
 	}
+*/
+	function test(route){
+		
+		/*console.log("Función test");
+		console.log(typeof(route));
+		console.log(typeof(JSON.stringify(route)));
+		var d = {olat: "1"}
+		$.ajax({
+			url:"/test",
+			type:"POST",
+			dataType: 'json',
+			data: d,
+			success: function(result){
+				console.log("BIEN")
+				console.log(result)
+			}, error: function(result, status, error){
+				console.log("MAL");
+				console.log(result);
+				console.log(status);
+				console.log(error);
+			}
+		});*/
+		//var d = { name :"Miquel", email: "asd@sad.com"};
+		$.ajax({
+			url: "test",
+			type:'POST',
+			contentType: "json",
+			data: JSON.stringify(route),
+			success: function(datos){
+				console.log("GOOD");
+				console.log(datos);
+			}, error: function(datos, status, error){
+				console.log("BAD");
+				console.log(datos);
+				console.log(status);
+				console.log(error);
+			}
+		});
+	
+		//$.postJSON('/test',JSON.stringify(route), function(data){ console.log(data) });
+	}
+
+
 
 	$('#enviar').click(function(){
 		let transOptions;
@@ -308,6 +351,9 @@ $(function(){
 				}
 				console.log("ROUTE");
 				console.log(route);
+				
+				test(route);
+				
 				// A partir de este punto hay que llamar a una función python para ir a la BBDD
 				// comprobar la densidad por cada tramo o... cada subtramo.
 				// Para acceder a cada una de las ruta iterando la longitud del array step (step.length).

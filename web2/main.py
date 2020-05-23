@@ -17,8 +17,9 @@ import time
 import sqlalchemy
 import os
 import pymysql
+import json
 # [START gae_python37_app]
-from flask import Flask,render_template
+from flask import Flask,render_template,request,jsonify
 
 db_user = os.environ.get('CLOUD_SQL_USERNAME')
 db_password = os.environ.get('CLOUD_SQL_PASSWORD')
@@ -98,6 +99,15 @@ def getTrams():
         print(result)
     cnx.close()
     return 'OK'
+	
+@app.route('/test', methods=['POST'])
+#@app.route('/test')
+def test():
+	if request.method == 'POST':
+		data = request.data
+		return data
+	else:
+		return 'no ok'
 
 
 
