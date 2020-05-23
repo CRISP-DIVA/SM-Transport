@@ -15,10 +15,15 @@ import requests
 import pandas as pd
 import time
 import sqlalchemy
+import os
+import pymysql
 # [START gae_python37_app]
 from flask import Flask,render_template
 
-
+db_user = os.environ.get('CLOUD_SQL_USERNAME')
+db_password = os.environ.get('CLOUD_SQL_PASSWORD')
+db_name = os.environ.get('CLOUD_SQL_DATABASE_NAME')
+db_connection_name = os.environ.get('CLOUD_SQL_CONNECTION_NAME')
 # If `entrypoint` is not defined in app.yaml, App Engine will look for an app
 # called `app` in `main.py`.
 app = Flask(__name__)
@@ -41,31 +46,58 @@ def addUser():
     time.sleep(0.5)
     return 'OK'
 
-@app.route('/addRoute')
-def addRoute():
-    d = {"olat": "1","olng": "1","dlat": "1","dlng": "1","hora": "2000-01-01 00:00:00","mode": "trans","user_id": "2"}
-    response = requests.post('https://us-central1-ssmm-safe-transportation.cloudfunctions.net/InsertRuta2', json=d)
-    print(response.status_code)
-    time.sleep(0.5)
+@app.route('/addRoutes')
+def addRoutes():
+    df = pd.read_csv("static/random_user_data.csv")
+    for d in df.values[1:]:
+        if os.environ.get('GAE_ENV') == 'standard':
+            # If deployed, use the local socket interface for accessing Cloud SQL
+            unix_socket = '/cloudsql/{}'.format(db_connection_name)
+            cnx = pymysql.connect(user=db_user, password=db_password,
+                                  unix_socket=unix_socket, db=db_name)
+        else:
+            # If running locally, use the TCP connections instead
+            # Set up Cloud SQL Proxy (cloud.google.com/sql/docs/mysql/sql-proxy)
+            # so that your application can use 127.0.0.1:3306 to connect to your
+            # Cloud SQL instance
+            host = '127.0.0.1'
+            cnx = pymysql.connect(user="root", password="ssmm2020",
+                                  host=host, db="ssmm_transport")
+
+        with cnx.cursor() as cursor:
+            #cursor.execute("INSERT INTO rutas(originlat,originlng,destlat,destlng,hora_sortida,trans_mode,user_id) VALUES("+str(d[1])+","+str(d[2])+","+str(d[3])+","+str(d[4])+",'2000-01-01 "+str(d[6])+"','"+str(d[5])+"',"+str(d[0])+");")
+            cursor.execute("INSERT INTO rutas(originlat,originlng,destlat,destlng,hora_sortida,trans_mode,user_id) VALUES("+str(d[1])+","+str(d[2])+","+str(d[3])+","+str(d[4])+",'2000-01-01 "+str(d[6])+"','"+str(d[5])+"',"+str(d[0])+");")
+            cnx.commit()
+        cnx.close()
+
+    
     return 'OK'
 
 
 @app.route('/getTrams')
 def getTrams():
-    db = sqlalchemy.create_engine(
-        # Equivalent URL:
-        # mysql+pymysql://<db_user>:<db_pass>@/<db_name>?unix_socket=/cloudsql/<cloud_sql_instance_name>
-        sqlalchemy.engine.url.URL(
-            drivername="mysql+pymysql",
-            username="root",
-            password="vilarinyoputoamoenrobotica2020",
-            database="ssmm_database",
-            query={"unix_socket": "/cloudsql/{}".format("ssmm-safe-transportation:europe-west1:ssmm-transport-database")},
-        ),
-        # ... Specify additional properties here.
-        # ...
-    )
 
+    if os.environ.get('GAE_ENV') == 'standard':
+        # If deployed, use the local socket interface for accessing Cloud SQL
+        unix_socket = '/cloudsql/{}'.format(db_connection_name)
+        cnx = pymysql.connect(user=db_user, password=db_password,
+                              unix_socket=unix_socket, db=db_name)
+    else:
+        # If running locally, use the TCP connections instead
+        # Set up Cloud SQL Proxy (cloud.google.com/sql/docs/mysql/sql-proxy)
+        # so that your application can use 127.0.0.1:3306 to connect to your
+        # Cloud SQL instance
+        host = '127.0.0.1'
+        cnx = pymysql.connect(user="root", password="ssmm2020",
+                              host=host, db="ssmm_transport")
+
+    with cnx.cursor() as cursor:
+        cursor.execute('SELECT * from rutas;')
+        result = cursor.fetchall()
+        current_time = result[0][0]
+        print(result)
+    cnx.close()
+    return 'OK'
 
 
 
