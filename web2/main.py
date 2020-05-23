@@ -103,11 +103,15 @@ def getTrams():
 @app.route('/test', methods=['POST'])
 #@app.route('/test')
 def test():
-	if request.method == 'POST':
-		data = request.data
-		return data
-	else:
-		return 'no ok'
+    if request.method == 'POST':
+        data = json.loads(request.data)
+        print(data)
+        response = requests.post("https://europe-west1-ssmm-transport-python.cloudfunctions.net/getdens", json=data)
+        #print(response.status_code)
+        #print(response.json())
+        return json.dumps(response.json())
+    else:
+        return 'no ok'
 
 
 
