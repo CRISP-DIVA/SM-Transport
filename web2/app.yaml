@@ -2,10 +2,10 @@ runtime: python37
 env_variables:
 #  # Replace USER, PASSWORD, DATABASE, and CONNECTION_NAME with the
 # # values obtained when configuring your Cloud SQL instance.
-  MYSQL_DSN: mysql:unix_socket=/cloudsql/ssmm-safe-transportation:europe-west1:ssmm-transport-database;dbname=ssmm_database
+  
   CLOUD_SQL_USERNAME: root
-  CLOUD_SQL_DATABASE_NAME: ssmm_database
-  CLOUD_SQL_PASSWORD: vilarinyoputoamoenrobotica2020
-  CLOUD_SQL_CONNECTION_NAME: ssmm-safe-transportation:europe-west1:ssmm-transport-database
+  CLOUD_SQL_DATABASE_NAME: ssmm_transport
+  CLOUD_SQL_PASSWORD: ssmm2020
+  CLOUD_SQL_CONNECTION_NAME: ssmm-transport-python:europe-west1:ssmm-transport-database
   MYSQL_USER: root
   MYSQL_PASSWORD: vilarinyoputoamoenrobotica2020

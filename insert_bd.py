@@ -11,6 +11,5 @@ import time
 df  = pd.read_csv("random_user_data.csv")
 for  data in df.values:
     d = {"olat": str(data[1]),"olng": str(data[2]),"dlat": str(data[3]),"dlng": str(data[4]),"hora": "2000-01-01 "+data[6],"mode": data[5],"user_id": str(data[0])}
-    response = requests.post('https://us-central1-ssmm-safe-transportation.cloudfunctions.net/InsertRuta2', json=d)
+    response = requests.post('https://us-central1-ssmm-transport-python.cloudfunctions.net/insertrut', json=d)
     print(response.status_code)
-    time.sleep(0.5);

@@ -167,8 +167,9 @@ $(function(){
 	
 		//var d = { name : "Miquel", email : "Miquel@gmail.com" };
         $.ajax({
-                url : "/getTrams",
+                url : "/addRoute",
                 //async: false,
+		data : d,
                 success : function(response){
                        //codigo de exito
                        console.log("Good");
