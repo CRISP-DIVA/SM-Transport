@@ -33,6 +33,7 @@ $(function(){
 	var colors = ['red', 'blue', 'green', 'black', 'white'];
 	var coords = [];
 	var minDistancia = 0;
+	var route2;
 
 
 	navigator.geolocation.getCurrentPosition(success, error);
@@ -188,58 +189,17 @@ $(function(){
         });
 	});
 
-/*	function asyncChange(){
-		var request;
-		if(window.XMLHttpRequest){
-			request = new window.XMLHttpRequest();
-		} else {
-			request = new window.AciveXObject("Microsoft.XMLHTTP");
-		}
-		console.log(request);
-		request.open("GET", "https://us-central1-ssmm-safe-transportation.cloudfunctions.net/function-71", true);
-		request.send();
-		console.log(request);
-		request.onreadystatechange = function(){
-			if (request.readyState == 4 && request.status == 200){
-				console.log("OK");
-				console.log(request.responseText);
-			} else {
-				console.log("Error");
-				console.log(request.responseText);
-			}
-		}
-	}
-*/
-	function test(route){
-		
-		/*console.log("Función test");
-		console.log(typeof(route));
-		console.log(typeof(JSON.stringify(route)));
-		var d = {olat: "1"}
-		$.ajax({
-			url:"/test",
-			type:"POST",
-			dataType: 'json',
-			data: d,
-			success: function(result){
-				console.log("BIEN")
-				console.log(result)
-			}, error: function(result, status, error){
-				console.log("MAL");
-				console.log(result);
-				console.log(status);
-				console.log(error);
-			}
-		});*/
-		//var d = { name :"Miquel", email: "asd@sad.com"};
+	async function test(route){
 		$.ajax({
 			url: "test",
 			type:'POST',
 			contentType: "json",
 			data: JSON.stringify(route),
 			success: function(datos){
-				console.log("GOOD");
-				console.log(datos);
+				console.log("GOOID");
+				//console.log(datos);
+				let obj = JSON.parse(datos);
+				route2 = obj;
 			}, error: function(datos, status, error){
 				console.log("BAD");
 				console.log(datos);
@@ -248,7 +208,6 @@ $(function(){
 			}
 		});
 	
-		//$.postJSON('/test',JSON.stringify(route), function(data){ console.log(data) });
 	}
 
 
@@ -353,12 +312,17 @@ $(function(){
 				console.log(route);
 				
 				test(route);
+				await sleep(2000);
+				console.log("route2");
+				console.log(route2);
+				
 				
 				// A partir de este punto hay que llamar a una función python para ir a la BBDD
 				// comprobar la densidad por cada tramo o... cada subtramo.
 				// Para acceder a cada una de las ruta iterando la longitud del array step (step.length).
 				// Para acceder a los tramos de una ruta, iterar sobre la ruta (ex. step[index].)
-				//console.log(route.steps[0][0][0].path);
+				//console.log(route2.steps[0][0][0].path);
+				console.log(route2.start_location);
 				////////////////////////////////////////////////////////
 				rutasAlternas = [];
 				gMarkerOrigen.setMap(null);
