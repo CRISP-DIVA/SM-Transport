@@ -107,8 +107,9 @@ def test():
         data = json.loads(request.data)
         print(data)
         response = requests.post("https://europe-west1-ssmm-transport-python.cloudfunctions.net/getdens", json=data)
+		
         print(response.status_code)
-        print(response.json())
+        #print(response.json())
         return json.dumps(response.json())
     else:
         return 'no ok'

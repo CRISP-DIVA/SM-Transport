@@ -1,4 +1,4 @@
-$(function(){
+$(async function(){
 	// Constantes
 	const RED = "#FF0000";
 	const ORANGE = "#E99400";
@@ -33,8 +33,17 @@ $(function(){
 	var colors = ['red', 'blue', 'green', 'black', 'white'];
 	var coords = [];
 	var minDistancia = 0;
-	var route2;
-
+	var densitats;
+	var minWalk;
+	var medWalk;
+	var maxWalk;
+	var minTran;
+	var medTran;
+	var maxTran;
+	var route;
+	var polyLineRoute;
+	var panel = false;
+	var valorAnterior;
 
 	navigator.geolocation.getCurrentPosition(success, error);
 
@@ -163,6 +172,9 @@ $(function(){
 
 
 	};
+	
+	await sleep(2000);
+	
 	$('#indata').click(function(){
 		console.log("HAS HECHO CLICK");
 
@@ -171,25 +183,25 @@ $(function(){
 		//$.get('in.php', (r) => console.log(r));
 		//var d = { name : "Miquel", email : "Miquel@gmail.com" };
         $.ajax({
-                url : "/addRoute",
-                //async: false,
-				data : d,
-                success : function(response){
-                       //codigo de exito
-                       console.log("Good");
-                       console.log(response);
-                },
-                error: function(response, status, error){
-                       //codigo error
-                       console.log("Bad");
-                       console.log(response);
-                       console.log(status);
-					   console.log(error);
-                }
+			url : "/addRoute",
+			//async: false,
+			data : d,
+			success : function(response){
+				   //codigo de exito
+				   console.log("Good");
+				   console.log(response);
+			},
+			error: function(response, status, error){
+				   //codigo error
+				   console.log("Bad");
+				   console.log(response);
+				   console.log(status);
+				   console.log(error);
+			}
         });
 	});
 
-	async function test(route){
+	function test(route){
 		$.ajax({
 			url: "test",
 			type:'POST',
@@ -199,9 +211,9 @@ $(function(){
 				console.log("GOOID");
 				//console.log(datos);
 				let obj = JSON.parse(datos);
-				route2 = obj;
+				densitats = obj;
 			}, error: function(datos, status, error){
-				console.log("BAD");
+				console.log("BAD BOYS");
 				console.log(datos);
 				console.log(status);
 				console.log(error);
@@ -271,6 +283,7 @@ $(function(){
 				let path;
 				let path2;
 				let path3 = [];
+				
 
 				$.each(rutaSel, function(ind, val){
 					$.each(val, function(ind2, val2){
@@ -287,6 +300,7 @@ $(function(){
 												   "longitud" : lng };
 									path.push(latLng);
 								});
+								
 								pathT.push({"travel_mode" : val3.travel_mode, "path":path});
 								path2.push(pathT);
 							});
@@ -295,7 +309,7 @@ $(function(){
 					});
 				});
 
-				let route = {
+				route = {
 					"start_location" : startLoc,
 					"end_location" : endLoc,
 					"departure_time" : {
@@ -312,17 +326,125 @@ $(function(){
 				console.log(route);
 				
 				test(route);
-				await sleep(2000);
-				console.log("route2");
-				console.log(route2);
+				await sleep(7000);
+				console.log("Denstitats");
+				console.log(densitats);
 				
+				/*densitats = {
+					densitat0: [{
+						0: "0.2238716520976601",
+						1: "0.06919529481122949",
+						2: "0.19389344594940222" 
+					}],
+					densitat2: [{
+						0: "0.131574005302513",
+						1: "0.045565162485712345",
+						2: "0.1883963265151703" 
+					}],
+					densitat1: [{
+						0: "0.044774481181203606",
+						1: "0.08365796829168337"
+					}],
+					
+					densitat3: [{
+						0: "0.1942329273932018",
+						1: "0.0871564305709073",
+						2: "0.19412271264529868" 
+					}]
+				};*/
+				
+				maxWalk = 0;
+				minWalk = 100;
+				maxTran = 0;
+				minTran = 100;
+				
+				let index = 0;
+				$.each(densitats, function(ind, val){
+					let index2 = 0;
+					//console.log("index antes : ",index);
+					//console.log("val densitats : ",val);
+					//console.log("route.steps[index] : ", route.steps[index]);
+					for (let j = 0; j<route.steps[index].length; j++){
+						//console.log("route.steps[index][j][0] : ",route.steps[index][j][0]);
+						if(route.steps[index][j][0].travel_mode == "WALKING"){
+							if (parseFloat(val[j][j]) > maxWalk){
+								maxWalk = parseFloat(val[j][j]);
+							}else {
+								if (  val[j][j] < minWalk) {
+									minWalk = parseFloat(val[j][j]);
+								}
+							}
+							//console.log("val walking [j] : ", val[j][j]);
+						} else {
+							if (parseFloat(val[j][j]) > maxTran){
+								maxTran = parseFloat(val[j][j]);
+							} else {
+								if ( val[j][j] < minTran) {
+									minTran = parseFloat(val[j][j]);
+								}
+							}
+							//console.log("val transit [j] : ", val[j][j]);
+						}
+					}
+					index += 1;
+					//console.log("index despues : ",index);
+				});
+				//console.log("index final : ",index);
+				
+				/*console.log("maxWalk : ", maxWalk);
+				console.log("minWalk : ", minWalk);
+				console.log("maxTran : ", maxTran);
+				console.log("minTran : ", minTran);
+				
+				console.log("suma walk : ",parseFloat(maxWalk)+parseFloat(minWalk));
+				console.log("divisio 2 walk : ",(parseFloat(maxWalk)+parseFloat(minWalk)) / 2);
+				console.log("divisio 3 walk : ",(parseFloat(maxWalk)+parseFloat(minWalk)) / 3);*/
+				
+				medWalk = (maxWalk+minWalk) / 2;
+				medTran = (maxTran+minTran) / 2;
+				
+				
+				
+				/*for (let i=0;i<route.steps.length; i++){
+					console.log("i : ", i);
+					for (let j=0;j<dens.length; j++){
+						console.log("j : ", j);
+					}
+				}*/
+				
+			/*	console.log(route.steps);
+				$.each(route.steps, function(ind, val){
+					console.log("Ind step : ",ind);
+					$.each(dens, function(ind3, val3){
+					
+						console.log("Ind3 dens : ", ind3);
+						console.log("Val3 dens : ", val3);
+						/*if(val2[0].travel_mode == "WAKLING"){
+							
+						} else {
+							
+						}
+							$.each(val, function(ind2, val2){	
+							console.log("Ind2 step : ", ind2),
+							console.log("Val2 step : ",val2[0].travel_mode);
+						});
+					});
+				});
+			*/	
+				
+				
+				/*$.each(dens, function(ind, val){
+					
+					console.log("Ind dens : ", ind),
+					console.log("Val dens : ",val);
+				});*/
 				
 				// A partir de este punto hay que llamar a una función python para ir a la BBDD
 				// comprobar la densidad por cada tramo o... cada subtramo.
 				// Para acceder a cada una de las ruta iterando la longitud del array step (step.length).
 				// Para acceder a los tramos de una ruta, iterar sobre la ruta (ex. step[index].)
 				//console.log(route2.steps[0][0][0].path);
-				console.log(route2.start_location);
+				//console.log(route2.start_location);
 				////////////////////////////////////////////////////////
 				rutasAlternas = [];
 				gMarkerOrigen.setMap(null);
@@ -336,44 +458,48 @@ $(function(){
 	//			rutasAlternas.setMap(gMap);
 	//			rutasAlternas.setPanel(document.getElementById('right-panel'));
 				///////////////////////////////////////////////////////////////////
-	//			for (var i = 0; i < response.routes.length; i++){
+				for (var i = 0; i < response.routes.length; i++){
 	//				console.log(response.routes[i]);
-	//				/*for(var j=0;j < response.routes[i].overview_path.length; j++){
-	//					//console.log("Coords = "+response.routes[i].overview_path[j].toString());
-	//					coords.push(response.routes[i].overview_path[j].toString());
-	//				}		*/
-	//				let dist = parseInt(response.routes[i].legs[0].distance.text.split(" ")[0]);
+					/*for(var j=0;j < response.routes[i].overview_path.length; j++){
+						//console.log("Coords = "+response.routes[i].overview_path[j].toString());
+						coords.push(response.routes[i].overview_path[j].toString());
+					}		*/
+					let dist = parseInt(response.routes[i].legs[0].distance.text.split(" ")[0]);
 	//				console.log(response.routes[i].legs[0].distance.text);
 	//				console.log(typeof response.routes[i].legs[0].distance.text);
 	//				console.log(dist);
 	//				console.log(typeof dist);
 	//				console.log("minDist + 5 ", minDistancia + 5);
 	//				console.log("dist > minDistancia + 5" , dist > minDistancia + 5);
-	//
-	//				if(dist < minDistancia + 5){
-	//					/*rutasAlternas[i] = new google.maps.DirectionsRenderer({
-	//										directions: response,
-	//										routeIndex: i,
-	//									});
-	//					rutasAlternas[0].setMap(gMap);
-	//					rutasAlternas[0].setPanel(document.getElementById('right-panel'));*/
-	//					gDirectionsRenderer = new google.maps.DirectionsRenderer({
-	//												directions: response,
-	//												routeIndex: i,
-	//												//polylineOptions: { visible: false }
-	//											});
-	//					rutasAlternas.push(gDirectionsRenderer);
-	//
-	//				}
-	//				rutasAlternas[0].setMap(gMap);
-	//				rutasAlternas[0].setPanel(document.getElementById('right-panel'));
-	//				//opcion = document.getElementById('adp-listsel');
-	//			}
-	//			//pintarRuta();
-	//
-	//			$('#right-panel').css('display', 'block').css('width','33%');
-	//			$('#map').css('width', '66%');
-
+	
+					if(dist < minDistancia + 5){
+						/*rutasAlternas[i] = new google.maps.DirectionsRenderer({
+											directions: response,
+											routeIndex: i,
+										});
+						rutasAlternas[0].setMap(gMap);
+						rutasAlternas[0].setPanel(document.getElementById('right-panel'));*/
+						gDirectionsRenderer = new google.maps.DirectionsRenderer({
+													directions: response,
+													routeIndex: i,
+													polylineOptions: { visible: false }
+												});
+						rutasAlternas.push(gDirectionsRenderer);
+	
+					}
+					rutasAlternas[0].setMap(gMap);
+					rutasAlternas[0].setPanel(document.getElementById('right-panel'));
+					//opcion = document.getElementById('adp-listsel');
+				}
+				//pintarRuta(minWalk, medWalk, maxWalk, minTran, medTran, maxTran, dens, route);
+			//	pintarRuta();
+	
+				$('#right-panel').css('display', 'block').css('width','33%');
+				$('#map').css('width', '66%');
+				console.log("gMaps : ", gMap);
+				console.log("rutasAlternas[0] : ", rutasAlternas[0]);
+				panel = true;
+				valorAnterior = document.getElementsByClassName('adp-listsel')[0].getAttributeNode('data-route-index').value;
 			} else {
 				console.error('Directions request failed due to ' + status);
 			}
@@ -407,6 +533,8 @@ $(function(){
 			console.error("Error: " + status);
 		}
 	}
+	
+	
 
 
 	function geocodeAddress(place, geocoder, map){
@@ -455,13 +583,17 @@ $(function(){
 			});
 		}
 	}
+	
+	
+	
+	
 
 	$('#guardar').click(function(){
 
 		console.log("Guardar");
 		let opcion = document.getElementsByClassName('adp-listsel')[0].getAttributeNode('data-route-index').value;
-
-		let rutaSel = rutasAlternas[0].directions.routes[opcion].legs;
+		console.log("Opcion : ", opcion);
+		/*let rutaSel = rutasAlternas[0].directions.routes[opcion].legs;
 
 		let startLoc = rutaSel[0].start_location.toString();
 		let endLoc = rutaSel[0].end_location.toString();
@@ -498,11 +630,17 @@ $(function(){
 			"steps" : path2
 
 		}
-		console.log(route);
+		console.log(route);*/
 
 	});
-
-
+	
+	function actualizar(){
+		if(panel){
+			if (document.getElementsByClassName('adp-listsel')[0].getAttributeNode('data-route-index').value != valorAnterior){
+				pintarRuta();
+			}
+		}
+	}
 
 	//Carrer de Batista i Roca, 11A, 08912 Badalona, Barcelona, España
 	//Gran Via de les Corts Catalanes, 1097, 08020 Barcelona, España
@@ -510,46 +648,191 @@ $(function(){
 	$('#pintar').click(pintarRuta);
 
 
+	//function pintarRuta(minWalk, medWalk, maxWalk, minTran, medTran, maxTran, densitat, route){
 	function pintarRuta(){
 		console.log("Pintar Ruta");
+	
+		console.log("minWalk : ", minWalk);
+		console.log("medWalk : ", medWalk);
+		console.log("maxWalk : ", maxWalk);
+		console.log("minTran : ", minTran);
+		console.log("medTran : ", medTran);
+		console.log("maxTran : ", maxTran);
+		console.log("densitats : ", densitats);
+
+		$.each(polyLineRoute, function(ind, val){
+			console.log("polyLineRoute ind : ", ind);
+			console.log("polyLineRoute val : ", val);
+			val.setOptions({map: null});
+		});
+		polyLineRoute = [];
+		console.log(densitats);
+		let dens = new Array();
+		
+		$.each(densitats, function(ind, val){
+			console.log("VALOR DENSITATS : ",val);
+			dens.push(val);
+		});
+		
+		let dens2 = [
+					[{
+						0: "0.2238716520976601",
+						1: "0.06919529481122949",
+						2: "0.19389344594940222" 
+					}],
+					[{
+						0: "0.131574005302513",
+						1: "0.045565162485712345",
+						2: "0.1883963265151703" 
+					}],
+					[{
+						0: "0.044774481181203606",
+						1: "0.08365796829168337"
+					}],
+					
+					
+					[{
+						0: "0.1942329273932018",
+						1: "0.0871564305709073",
+						2: "0.19412271264529868" 
+					}]
+				];
+				
+
+		console.log("Densitats : ", densitats);
+		console.log("Dens : ", dens);
+		console.log("Dens 2 : ", dens2);
 
 		let ind = rutasAlternas[0].getRouteIndex();
 		console.log(ind);
-		for (let i=0; i<rutasAlternas[ind].directions.routes[ind].legs[0].steps.length; i++){
-
-
-			let color;
-			if (i % 2 == 0){ color = ORANGE;
-			} else { color = RED; }
-
-			let path = rutasAlternas[ind].directions.routes[ind].legs[0].steps[i].path;
-
-			console.log("Color : ", color);
-
+		let index = 0;
+		console.log(route);
+		for (let j = 0; j<route.steps[ind].length; j++){
+			console.log(route.steps[ind][j][0]);
+			console.log(route.steps[ind][j][0]);
+			if(route.steps[ind][j][0].travel_mode == "WALKING"){
+				console.log("WALKING");
+				if (parseFloat(dens[ind][index][index]) > minWalk && parseFloat(dens[ind][index][index]) < medWalk){
+					color = GREEN;
+				}else if (parseFloat(dens[ind][index][index]) >= medWalk && parseFloat(dens[ind][index][index]) < maxWalk) {
+					color = ORANGE;
+				} else {
+					color = RED;
+				}
+			} else {
+				console.log("TRANSIT");
+				if (parseFloat(dens[ind][index][index]) >= minTran && parseFloat(dens[ind][index][index]) < medTran){
+					color = GREEN;
+				}else if (parseFloat(dens[ind][index][index]) >= medTran && parseFloat(dens[ind][index][index]) < maxTran) {
+					color = ORANGE;
+				} else {
+					color = RED;
+				}
+			}
+			console.log("Valor : ", dens[ind][index][index]);
+			
 			let paths2 = new Array();
 
-			for (let b = 0; b < path.length; b++){
-				paths2.push(path[b]);
+			for (let b = 0; b < route.steps[ind][j][0].path.length; b++){
+				paths2.push( new google.maps.LatLng(route.steps[ind][j][0].path[b].latitud,route.steps[ind][j][0].path[b].longitud));
+				
 			}
-
+			
 			let p = new google.maps.Polyline({
-				path: paths2,
-				geodesic: true,
-				strokeColor: color,
-				strokeOpacity: 1.0,
-				strokeWeight: 5
-			});
-
+					path: paths2,
+					geodesic: true,
+					strokeColor: color,
+					strokeOpacity: 1.0,
+					strokeWeight: 5
+				});
 			p.setOptions({map: gMap});
-
+			polyLineRoute.push(p);
+			index += 1;
 		}
+	//	console.log(colours);
+		/*
+		let index = 0;
+		for (let j = 0; j<route.steps[index].length; j++){
+		
+			if(route.steps[index][j][0].travel_mode == "WALKING"){
+				if (parseFloat(dens[ind][index]) > minWalk && parseFloat(dens[ind][index]) < medWalk){
+					color = GREEN;
+				}else if (parseFloat(dens[ind][index]) >= medWalk && parseFloat(dens[ind][index]) < maxWalk) {
+					color = ORANGE;
+				} else {
+					color = RED;
+				}
+			} else {
+				if (parseFloat(dens[ind][index]) > minTran && parseFloat(dens[ind][index]) < minTran){
+					color = GREEN;
+				}else if (parseFloat(dens[ind][index]) >= minTran && parseFloat(dens[ind][index]) < minTran) {
+					color = ORANGE;
+				} else {
+					color = RED;
+				}
+			}
+		}	
+		
+
+		console.log("dens : ", dens[ind]);
+
+		for (let i=0; i<rutasAlternas[ind].directions.routes[ind].legs[0].steps.length; i++){
+
+			
+			for (let j = 0; j<route.steps[index].length; j++){
+		
+				if(route.steps[index][j][0].travel_mode == "WALKING"){
+					if (parseFloat(dens[ind][index]) > minWalk && parseFloat(dens[ind][index]) < medWalk){
+						color = GREEN;
+					}else if (parseFloat(dens[ind][index]) >= medWalk && parseFloat(dens[ind][index]) < maxWalk) {
+						color = ORANGE;
+					} else {
+						color = RED;
+					}
+				} else {
+					if (parseFloat(dens[ind][index]) > minTran && parseFloat(dens[ind][index]) < minTran){
+						color = GREEN;
+					}else if (parseFloat(dens[ind][index]) >= minTran && parseFloat(dens[ind][index]) < minTran) {
+						color = ORANGE;
+					} else {
+						color = RED;
+					}
+				}
+				
+				let path = rutasAlternas[ind].directions.routes[ind].legs[0].steps[i].path;
+
+				console.log("Color : ", color);
+
+				let paths2 = new Array();
+
+				for (let b = 0; b < path.length; b++){
+					paths2.push(path[b]);
+				}
+
+				let p = new google.maps.Polyline({
+					path: paths2,
+					geodesic: true,
+					strokeColor: color,
+					strokeOpacity: 1.0,
+					strokeWeight: 5
+				});
+
+				p.setOptions({map: gMap});
+				
+				
+			}	
+			
+			
+
+		}*/
 	}
 
-
-
+	
 	function sleep(ms) {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
+	
+	//
 
 	$.datepicker.regional["es"] = {
 		closeText: 'Cerrar',
@@ -575,6 +858,6 @@ $(function(){
 	$.datepicker.setDefaults($.datepicker.regional["es"]);
 	$( "#datepicker" ).datepicker();
 
-
+	setInterval(actualizar,1000);
 
 });
