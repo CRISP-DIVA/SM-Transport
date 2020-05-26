@@ -9,17 +9,7 @@
 		<link rel="stylesheet" href="{{url_for('static', filename='css/jquery-ui.css')}}">
 		<link rel="stylesheet" href="{{url_for('static', filename='css/jquery-ui.structure.css')}}">
 		<link rel="stylesheet" href="{{url_for('static', filename='css/jquery-ui.theme.css')}}">
-		<link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
-		
-		
-		<!--<script type="text/javascript" src="scripts/jquery-3.5.1.js"></script>-->
-		<script type="text/javascript" src="{{url_for('static', filename='js/jquery-3.5.1.js')}}"></script>
-		<script type="text/javascript" src="{{url_for('static', filename='js/jquery-ui.min.js')}}"></script>
-		<script type="text/javascript" src="{{url_for('static', filename='js/bootstrap.js')}}"></script>
-		<script type="text/javascript" src="{{url_for('static', filename='js/script.js')}}"></script>
-		<!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAikv_zwmE_upUzXmsC_MGSEgRkzpdkDVU"-->
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEhSk10kykEmIR78FnvzWPYJbNIwTPSKk"
-		async defer></script>
+		<link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">		
 
 	</head>
 	<body>
@@ -27,6 +17,9 @@
 
 		</header>
 		<section>
+			<div id="espera">
+				<div class="preloader"></div>
+			</div>
 			<div id="container">
 				<div class="row" id="map-panel">
 					<div id="map" ></div>
@@ -61,25 +54,25 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<input type="button" id="enviar" class="form-control" value="Buscar Ruta">
+							<input type="button" id="enviar" class="form-control" value="Buscar Ruta" disabled>
 						</div>
 						<div class="form-group">
 							<input type="button" id="guardar" class="form-control" value="Guardar Ruta">
 						</div>
-						<div class="form-group">
+						<!--<div class="form-group">
 							<input type="button" id="pintar" class="form-control" value="Pintar Ruta">
 						</div>
 						
 						<div class="form-group">
 							<input type="button" id="indata" class="indata" value="INPUT DATA">
-						</div>
+						</div>-->
 						
 
 					</div>
 				</form>
 			</div>
 		</section>
-		<footer class="page-footer font-small blue">
+		<footer class="page-footer font-small blue fixed-bottom">
 
 			<div class="container">
 				<ul class="foote_bottom_ul_amrc">
@@ -91,11 +84,18 @@
 				<li><a href="#">Directori web</a></li>
 				</ul>
 			</div>
-			<div class="footer-copyright text-center py-3">© Grup MASS 2020 - Tots els drets reservats:
+			<div class="footer-copyright text-center py-3">© Grup MASS 2020 - Tots els drets reservats.
 				<!--<a href="https://mdbootstrap.com/"> MDBootstrap.com</a>-->
 			</div>
 
 		</footer>
+		<script type="text/javascript" src="{{url_for('static', filename='js/jquery-3.5.1.js')}}"></script>
+		<script type="text/javascript" src="{{url_for('static', filename='js/jquery-ui.min.js')}}"></script>
+		<script type="text/javascript" src="{{url_for('static', filename='js/bootstrap.js')}}"></script>
+		<script type="text/javascript" src="{{url_for('static', filename='js/script.js')}}"></script>
+		<!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAikv_zwmE_upUzXmsC_MGSEgRkzpdkDVU"-->
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEhSk10kykEmIR78FnvzWPYJbNIwTPSKk"
+		async defer></script>
 	</body>
 </html>
 

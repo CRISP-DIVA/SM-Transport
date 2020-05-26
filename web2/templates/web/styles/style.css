@@ -19,7 +19,12 @@ body {
 	width:50%;
 	margin: 0 auto;
 }*/
-
+#espera {
+	background: black;
+	width:100%;
+	height:100%;
+	z-index:99;
+}
 
 /* ------------ Panel de ruta ------------ */
 #right-panel{
