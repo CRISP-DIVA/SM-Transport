@@ -4,7 +4,7 @@
 		<meta charset="utf-8" />
 		<title>Safe Transportation</title>
 		<meta name="viewport" content="initial-scale=1.0">
-		
+		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 		<link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.css')}}">
 		<link rel="stylesheet" href="{{url_for('static', filename='css/jquery-ui.css')}}">
 		<link rel="stylesheet" href="{{url_for('static', filename='css/jquery-ui.structure.css')}}">

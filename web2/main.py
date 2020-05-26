@@ -19,7 +19,7 @@ import os
 import pymysql
 import json
 # [START gae_python37_app]
-from flask import Flask,render_template,request,jsonify
+from flask import Flask,render_template,request,jsonify, send_from_directory
 
 db_user = os.environ.get('CLOUD_SQL_USERNAME')
 db_password = os.environ.get('CLOUD_SQL_PASSWORD')
@@ -114,7 +114,10 @@ def test():
     else:
         return 'no ok'
 
-
+@app.route('/favicon.ico')
+def favicon():
+	return send_from_directory(os.path.join(app.root_path, 'static'),
+				'favicon.ico')
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google App
