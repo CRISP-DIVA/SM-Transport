@@ -535,7 +535,13 @@ $(async function(){
 
 			let path = new Array();
 			$.each(val.path, function(ind2, val2){
-				path.push(val2.toString());
+				//path.push(val2.toString());
+				let tmp = val4.toString().split(",");
+				lat = tmp[0].split("(")[1];
+				lng = tmp[0].split(")")[0];
+				let latLng = {"latitud" : lat,
+							  "longitud" : lng };
+				path.push(latLng);
 			});
 			pathT = { "travel_mode" : val.travel_mode, "path":path }
 			path2.push(pathT);
@@ -567,6 +573,9 @@ $(async function(){
 			},
 			error: function(data, status, error){
 				alert("S'ha produït un error a l'hora d'emmagatzemar la ruta");
+				console.log(data);
+				console.log(status);
+				console.log(error);
 			}
 		});
 
