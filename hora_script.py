@@ -34,21 +34,23 @@ def get_steps(ruta,coords,tram_types,tram_bounds):
 
 def hora_tramo(request):
     
-    d = datetime.datetime.now()
+    d = datetime.now()
     timezone1 = pytz.timezone("ETC/GMT")
     timezone2 = pytz.timezone("Europe/Paris")
     now = timezone1.localize(d)
     now = now.astimezone(timezone2)
     data = 0
     data_arr = []
-    current_time = now.strftime("%H:00:00")
+    current_time = now.strftime("03:00:00")
     db = sqlalchemy.create_engine('mysql+pymysql://root:ssmm2020@localhost/ssmm_transport')
     
     with db.connect() as conn:
+        q = "DELETE FROM hores_tram WHERE hores_tram.hora < '2000-01-01 "+str(current_time)+"';"
+        conn.execute(q)
         q = "SELECT * FROM rutas WHERE rutas.hora_sortida = '2000-01-01 "+current_time+"';"
         data = pd.read_sql(q,con=conn)
      
-        for ruta in data.values[:50]:
+        for ruta in data.values:
             indications = gmaps.directions([ruta[1],ruta[2]],[ruta[3],ruta[4]],mode='transit',departure_time=now)
             if len(indications)>0:
                 indications = indications[0]
