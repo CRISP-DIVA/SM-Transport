@@ -52,11 +52,10 @@ def save_route():
     db = sqlalchemy.create_engine('mysql+pymysql://root:ssmm2020@localhost/ssmm_transport')
         
     with db.connect() as conn:
+        q = "INSERT INTO rutas (originlat,originlng,destlat,destlng,hora_sortida,trans_mode,user_id) VALUES ('"+start[0][1:-1]+"','"+start[1][:-1]+"','"+end[0][1:-1]+"','"+end[1][:-1]+"','"+"2000-01-01 "+current_time+"','transit','2');"
+        conn.execute(q)
         for ruta in steps:
             densitats = []
-            
-            q = "INSERT INTO rutas (originlat,originlng,destlat,destlng,hora_sortida,trans_mode,user_id) VALUES ('"+start[0][1:-1]+"','"+start[1][:-1]+"','"+end[0][1:-1]+"','"+end[1][:-1]+"','"+"2000-01-01 "+current_time+"','transit','2');"
-            conn.execute(q)
             
             for step in ruta:
                 travel_modes.append(step[0]['travel_mode'])
