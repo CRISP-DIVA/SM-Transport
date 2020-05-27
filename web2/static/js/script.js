@@ -538,7 +538,7 @@ $(async function(){
 				//path.push(val2.toString());
 				let tmp = val2.toString().split(",");
 				lat = tmp[0].split("(")[1];
-				lng = tmp[0].split(")")[0];
+				lng = tmp[1].split(")")[0];
 				let latLng = {"latitud" : lat,
 							  "longitud" : lng };
 				path.push(latLng);
@@ -563,7 +563,7 @@ $(async function(){
 		}
 		console.log(route);
 		
-		$.ajax({
+		/*$.ajax({
 			url: 'save',
 			type: 'POST',
 			contentType: 'json',
@@ -577,7 +577,7 @@ $(async function(){
 				console.log(status);
 				console.log(error);
 			}
-		});
+		});*/
 
 		/*
 		function test(route){
