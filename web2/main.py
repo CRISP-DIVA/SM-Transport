@@ -114,6 +114,15 @@ def test():
     else:
         return 'no ok'
 
+@app.route('/save', methods=['POST'])
+def save():
+	if request.method == 'POST':
+		data = json.loads(request.data)
+		response = request.post("https://europe-west1-ssmm-transport-python.cloudfunctions.net/function-1", json=data)
+		return json.dumps(response.json())
+	else:
+		return "error, not method POST"
+
 @app.route('/favicon.ico')
 def favicon():
 	return send_from_directory(os.path.join(app.root_path, 'static'),

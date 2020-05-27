@@ -518,7 +518,7 @@ $(async function(){
 		console.log("Guardar");
 		let opcion = document.getElementsByClassName('adp-listsel')[0].getAttributeNode('data-route-index').value;
 		//console.log("Opcion : ", opcion);
-		/*let rutaSel = rutasAlternas[0].directions.routes[opcion].legs;
+		let rutaSel = rutasAlternas[0].directions.routes[opcion].legs;
 
 		let startLoc = rutaSel[0].start_location.toString();
 		let endLoc = rutaSel[0].end_location.toString();
@@ -555,7 +555,43 @@ $(async function(){
 			"steps" : path2
 
 		}
-		console.log(route);*/
+		console.log(route);
+		
+		$.ajax({
+			url: 'save',
+			type: 'POST',
+			contentType: 'json',
+			data: JSON.stringify(route),
+			success: function(data){
+				alert("Ruta emmagatzemada correctament");
+			},
+			error: function(data, status, error){
+				alert("S'ha produït un error a l'hora d'emmagatzemar la ruta");
+			}
+		});
+
+		/*
+		function test(route){
+		$.ajax({
+			url: "test",
+			type:'POST',
+			contentType: "json",
+			data: JSON.stringify(route),
+			success: function(datos){
+				//console.log("GOOID");
+				//console.log(datos);
+				let obj = JSON.parse(datos);
+				densitats = obj;
+			}, error: function(datos, status, error){
+				//console.log("BAD BOYS");
+				//console.log(datos);
+				//console.log(status);
+				//console.log(error);
+			}
+		});
+	
+	}
+		*/
 
 	});
 	
