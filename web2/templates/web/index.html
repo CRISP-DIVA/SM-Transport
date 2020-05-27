@@ -31,9 +31,8 @@
 							<li id="liDesti">Destí</li>
 						</ul>
 					</div>
-					
 				</div>
-				<form>
+				<form id="myForm">
 					<div id="dades">
 						<div class="form-group">
 							<label>Origen</label>
@@ -57,17 +56,8 @@
 							<input type="button" id="enviar" class="form-control" value="Buscar Ruta" disabled>
 						</div>
 						<div class="form-group">
-							<input type="button" id="guardar" class="form-control" value="Guardar Ruta">
+							<input type="button" id="guardar" class="form-control" value="Guardar Ruta" disabled>
 						</div>
-						<!--<div class="form-group">
-							<input type="button" id="pintar" class="form-control" value="Pintar Ruta">
-						</div>
-						
-						<div class="form-group">
-							<input type="button" id="indata" class="indata" value="INPUT DATA">
-						</div>-->
-						
-
 					</div>
 				</form>
 			</div>
@@ -85,7 +75,6 @@
 				</ul>
 			</div>
 			<div class="footer-copyright text-center py-3">© Grup MASS 2020 - Tots els drets reservats.
-				<!--<a href="https://mdbootstrap.com/"> MDBootstrap.com</a>-->
 			</div>
 
 		</footer>
@@ -93,7 +82,6 @@
 		<script type="text/javascript" src="{{url_for('static', filename='js/jquery-ui.min.js')}}"></script>
 		<script type="text/javascript" src="{{url_for('static', filename='js/bootstrap.js')}}"></script>
 		<script type="text/javascript" src="{{url_for('static', filename='js/script.js')}}"></script>
-		<!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAikv_zwmE_upUzXmsC_MGSEgRkzpdkDVU"-->
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEhSk10kykEmIR78FnvzWPYJbNIwTPSKk"
 		async defer></script>
 	</body>

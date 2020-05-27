@@ -58,15 +58,7 @@
 						</div>
 						<div class="form-group">
 							<input type="button" id="guardar" class="form-control" value="Guardar Ruta">
-						</div>
-						<!--<div class="form-group">
-							<input type="button" id="pintar" class="form-control" value="Pintar Ruta">
-						</div>
-						
-						<div class="form-group">
-							<input type="button" id="indata" class="indata" value="INPUT DATA">
-						</div>-->
-						
+						</div>						
 
 					</div>
 				</form>
@@ -93,7 +85,6 @@
 		<script type="text/javascript" src="{{url_for('static', filename='js/jquery-ui.min.js')}}"></script>
 		<script type="text/javascript" src="{{url_for('static', filename='js/bootstrap.js')}}"></script>
 		<script type="text/javascript" src="{{url_for('static', filename='js/script.js')}}"></script>
-		<!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAikv_zwmE_upUzXmsC_MGSEgRkzpdkDVU"-->
 		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAEhSk10kykEmIR78FnvzWPYJbNIwTPSKk"
 		async defer></script>
 	</body>
