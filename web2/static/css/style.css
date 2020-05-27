@@ -9,17 +9,31 @@ body {
 	overflow:hidden;
 	/*width:35%;*/
 	width: 75%;
-	height:350px;
+	/*height:350px;*/
+	height:400px;
 	margin: 0 auto;
+
 	
 }
 /* --------------------------------------- */
 
-/*#map-panel{
-	width:50%;
-	margin: 0 auto;
-}*/
+#map-panel{
+	
+	margin: 0 auto !important;
+}
 
+
+#espera {
+	display: none;
+	background: #404040bd;
+	width:100%;
+	height:100%;
+	overflow: hidden;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 99;
+}
 
 /* ------------ Panel de ruta ------------ */
 #right-panel{
@@ -39,9 +53,12 @@ body {
 #right-panel {
 	display: none;
 	margin-top:2% !important;
-	height: 350px;
+	margin-right: 3%;
+	width: 30% !important;
+	/*height: 350px;*/
+	height: 400px;
 	float: right;
-	width: 390px;
+	/*width: 390px;*/
 	overflow: auto;
 }
 @media print{
@@ -99,6 +116,40 @@ ul{
 #contextMenu li:hover{
 	background: #eee;
 }
+/* --------------------------------------- */
+
+/* ----------- Botons Formulari ---------- */
+#guardar{
+	display:none;
+}
+/* --------------------------------------- */
+
+/* ------------- PreLoader --------------- */
+.preloader{
+	width: 70px;
+	height: 70px;
+	border: 10px solid #eee;
+	border-top: 10px solid #666;
+	border-radius: 50%;
+	animation-name: girar;
+	animation-duration: 2s;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
+	display: none;
+	margin: 0 auto;
+	position:relative;
+	top: 40%;
+}
+
+@keyframes girar{
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
 /* --------------------------------------- */
 
 /* --------------- Footer ---------------- */

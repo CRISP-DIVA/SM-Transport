@@ -19,7 +19,7 @@ import os
 import pymysql
 import json
 # [START gae_python37_app]
-from flask import Flask,render_template,request,jsonify
+from flask import Flask,render_template,request,jsonify, send_from_directory
 
 db_user = os.environ.get('CLOUD_SQL_USERNAME')
 db_password = os.environ.get('CLOUD_SQL_PASSWORD')
@@ -35,7 +35,7 @@ def root():
     # For the sake of example, use static information to inflate the template.
     # This will be replaced with real information in later steps.
    
-    return render_template("web/index.php")
+    return render_template("web/index.html")
 	
 
 
@@ -105,15 +105,28 @@ def getTrams():
 def test():
     if request.method == 'POST':
         data = json.loads(request.data)
-        print(data)
+        #print(data)
         response = requests.post("https://europe-west1-ssmm-transport-python.cloudfunctions.net/getdens", json=data)
-        print(response.status_code)
-        print(response.json())
+		
+        #print(response.status_code)
+        #print(response.json())
         return json.dumps(response.json())
     else:
         return 'no ok'
 
+@app.route('/save', methods=['POST'])
+def save():
+	if request.method == 'POST':
+		data = json.loads(request.data)
+		response = request.post("https://europe-west1-ssmm-transport-python.cloudfunctions.net/function-1", json=data)
+		return json.dumps(response.json())
+	else:
+		return "error, not method POST"
 
+@app.route('/favicon.ico')
+def favicon():
+	return send_from_directory(os.path.join(app.root_path, 'static'),
+				'favicon.ico')
 
 if __name__ == '__main__':
     # This is used when running locally only. When deploying to Google App

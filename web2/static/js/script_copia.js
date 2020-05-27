@@ -90,7 +90,7 @@ $(async function(){
 			position: gLatLon,
 			map: gMap,
 			label: labels[0],
-			//icon: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+			icon: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
 		});
 
 		gMarkerDesti = new google.maps.Marker({
@@ -125,7 +125,7 @@ $(async function(){
 				position: gLatLon,
 				map:gMap,
 				label: labels[0],
-				//icon: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+				icon: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
 			});
 			$('#contextMenu').css('display','none');
 
@@ -133,9 +133,6 @@ $(async function(){
 
 			geocodeAddress('#origen', geocoder, gMap);
 			$('#liOrigen').data('semafor', false);
-			if ($('#desti').val().length > 0) {
-				$('#enviar').attr('disabled', false);
-			}
 		});
 
 		$('#liDesti').click(function(){
@@ -145,14 +142,11 @@ $(async function(){
 				position: gLatLon,
 				map:gMap,
 				label: labels[1],
-				//icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+				icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
 			});
 			$('#contextMenu').css('display','none');
 			geocodeAddress('#desti', geocoder, gMap);
 			$('#liDesti').data('semafor', false);
-			if ($('#origen').val().length > 0) {
-				$('#enviar').attr('disabled', false);
-			}
 		});
 
 
@@ -166,9 +160,6 @@ $(async function(){
 		$('#origen').blur(function(){
 			if ($('#origen').val().length > 0) {
 				geocodeAddress('#origen',geocoder, gMap);
-				if ($('#desti').val().length > 0) {
-					$('#enviar').attr('disabled', false);
-				}
 			}
 		});
 
@@ -176,32 +167,36 @@ $(async function(){
 		$('#desti').blur(function(){
 			if ($('#desti').val().length > 0) {
 				geocodeAddress('#desti', geocoder, gMap);
-				if ($('#origen').val().length > 0) {
-					$('#enviar').attr('disabled', false);
-				}
 			}
 		});
 
 
 	};
 	
-	//await sleep(2000);
+	await sleep(2000);
 	
 	$('#indata').click(function(){
+		console.log("HAS HECHO CLICK");
 
+		//asyncChange();
+
+		//$.get('in.php', (r) => console.log(r));
+		//var d = { name : "Miquel", email : "Miquel@gmail.com" };
         $.ajax({
 			url : "/addRoute",
+			//async: false,
+			data : d,
 			success : function(response){
 				   //codigo de exito
-				   //console.log("Good");
-				   //console.log(response);
+				   console.log("Good");
+				   console.log(response);
 			},
 			error: function(response, status, error){
 				   //codigo error
-				   //console.log("Bad");
-				   //console.log(response);
-				   //console.log(status);
-				   //console.log(error);
+				   console.log("Bad");
+				   console.log(response);
+				   console.log(status);
+				   console.log(error);
 			}
         });
 	});
@@ -213,15 +208,15 @@ $(async function(){
 			contentType: "json",
 			data: JSON.stringify(route),
 			success: function(datos){
-				//console.log("GOOID");
+				console.log("GOOID");
 				//console.log(datos);
 				let obj = JSON.parse(datos);
 				densitats = obj;
 			}, error: function(datos, status, error){
-				//console.log("BAD BOYS");
-				//console.log(datos);
-				//console.log(status);
-				//console.log(error);
+				console.log("BAD BOYS");
+				console.log(datos);
+				console.log(status);
+				console.log(error);
 			}
 		});
 	
@@ -231,7 +226,6 @@ $(async function(){
 
 	$('#enviar').click(function(){
 		$('#espera').css('display', 'block');
-		$('.preloader').css('display', 'block');
 		let transOptions;
 		if ($('#hora').val().length > 0 && $('#datepicker').val().length > 0){
 			let dia = parseInt($('#datepicker').val().split('/')[0]);
@@ -267,9 +261,10 @@ $(async function(){
 					travelMode: 'TRANSIT',
 					transitOptions: transOptions,
 				}, callback);
-				//console.log(response);
-				//await sleep(2000);
+				console.log(response);
+				await sleep(2000);
 
+				//console.log(response);
 				$.each(rutasAlternas, function(ind, val){
 					val.setMap(null);
 					val.setPanel(null);
@@ -282,7 +277,7 @@ $(async function(){
 				let depTimeHora = parseInt(depTime.split(":")[0]);
 				let depTimeMin = parseInt(depTime.split(":")[1]);
 				let duration = parseInt(rutaSel[0].legs[0].duration.text.split(" ")[0]);
-				let distance = parseFloat(rutaSel[0].legs[0].distance.text.split(" ")[0]);
+				//let distance = parseFloat(rutaSel[0].legs[0].distance.text.split(" ")[0]);
 				let lat;
 				let lon;
 				let pathT;// = new Array();
@@ -324,20 +319,42 @@ $(async function(){
 							"segos" : 00
 					},
 					"duration" : duration,
-					"distance" : distance,
+					//"distance" : distance,
 					"steps" : path3
 
 				}
-				//console.log("ROUTE");
-				//console.log(route);
+				console.log("ROUTE");
+				console.log(route);
 				
 				test(route);
 				await sleep(7000);
-				$('.preloader').css('display', 'none');
 				$('#espera').css('display', 'none');
-				//console.log("Denstitats");
-				//console.log(densitats);
-								
+				console.log("Denstitats");
+				console.log(densitats);
+				
+				/*densitats = {
+					densitat0: [{
+						0: "0.2238716520976601",
+						1: "0.06919529481122949",
+						2: "0.19389344594940222" 
+					}],
+					densitat2: [{
+						0: "0.131574005302513",
+						1: "0.045565162485712345",
+						2: "0.1883963265151703" 
+					}],
+					densitat1: [{
+						0: "0.044774481181203606",
+						1: "0.08365796829168337"
+					}],
+					
+					densitat3: [{
+						0: "0.1942329273932018",
+						1: "0.0871564305709073",
+						2: "0.19412271264529868" 
+					}]
+				};*/
+				
 				maxWalk = 0;
 				minWalk = 100;
 				maxTran = 0;
@@ -346,7 +363,11 @@ $(async function(){
 				let index = 0;
 				$.each(densitats, function(ind, val){
 					let index2 = 0;
+					//console.log("index antes : ",index);
+					//console.log("val densitats : ",val);
+					//console.log("route.steps[index] : ", route.steps[index]);
 					for (let j = 0; j<route.steps[index].length; j++){
+						//console.log("route.steps[index][j][0] : ",route.steps[index][j][0]);
 						if(route.steps[index][j][0].travel_mode == "WALKING"){
 							if (parseFloat(val[j][j]) > maxWalk){
 								maxWalk = parseFloat(val[j][j]);
@@ -355,6 +376,7 @@ $(async function(){
 									minWalk = parseFloat(val[j][j]);
 								}
 							}
+							//console.log("val walking [j] : ", val[j][j]);
 						} else {
 							if (parseFloat(val[j][j]) > maxTran){
 								maxTran = parseFloat(val[j][j]);
@@ -363,19 +385,81 @@ $(async function(){
 									minTran = parseFloat(val[j][j]);
 								}
 							}
+							//console.log("val transit [j] : ", val[j][j]);
 						}
 					}
 					index += 1;
+					//console.log("index despues : ",index);
 				});
-								
+				//console.log("index final : ",index);
+				
+				/*console.log("maxWalk : ", maxWalk);
+				console.log("minWalk : ", minWalk);
+				console.log("maxTran : ", maxTran);
+				console.log("minTran : ", minTran);
+				
+				console.log("suma walk : ",parseFloat(maxWalk)+parseFloat(minWalk));
+				console.log("divisio 2 walk : ",(parseFloat(maxWalk)+parseFloat(minWalk)) / 2);
+				console.log("divisio 3 walk : ",(parseFloat(maxWalk)+parseFloat(minWalk)) / 3);*/
+				
 				medWalk = (maxWalk+minWalk) / 2;
 				medTran = (maxTran+minTran) / 2;
 				
-
+				
+				
+				/*for (let i=0;i<route.steps.length; i++){
+					console.log("i : ", i);
+					for (let j=0;j<dens.length; j++){
+						console.log("j : ", j);
+					}
+				}*/
+				
+			/*	console.log(route.steps);
+				$.each(route.steps, function(ind, val){
+					console.log("Ind step : ",ind);
+					$.each(dens, function(ind3, val3){
+					
+						console.log("Ind3 dens : ", ind3);
+						console.log("Val3 dens : ", val3);
+						/*if(val2[0].travel_mode == "WAKLING"){
+							
+						} else {
+							
+						}
+							$.each(val, function(ind2, val2){	
+							console.log("Ind2 step : ", ind2),
+							console.log("Val2 step : ",val2[0].travel_mode);
+						});
+					});
+				});
+			*/	
+				
+				
+				/*$.each(dens, function(ind, val){
+					
+					console.log("Ind dens : ", ind),
+					console.log("Val dens : ",val);
+				});*/
+				
+				// A partir de este punto hay que llamar a una función python para ir a la BBDD
+				// comprobar la densidad por cada tramo o... cada subtramo.
+				// Para acceder a cada una de las ruta iterando la longitud del array step (step.length).
+				// Para acceder a los tramos de una ruta, iterar sobre la ruta (ex. step[index].)
+				//console.log(route2.steps[0][0][0].path);
+				//console.log(route2.start_location);
+				////////////////////////////////////////////////////////
 				rutasAlternas = [];
 				gMarkerOrigen.setMap(null);
 				gMarkerDesti.setMap(null);
-
+				///////////////////////////////////////////////////////////////////
+	//			rutasAlternas = new google.maps.DirectionsRenderer({
+	//												directions: response,
+	//												//routeIndex: i,
+	//												//polylineOptions: { visible: false }
+	//											});
+	//			rutasAlternas.setMap(gMap);
+	//			rutasAlternas.setPanel(document.getElementById('right-panel'));
+				///////////////////////////////////////////////////////////////////
 				for (var i = 0; i < response.routes.length; i++){
 	//				console.log(response.routes[i]);
 					/*for(var j=0;j < response.routes[i].overview_path.length; j++){
@@ -410,21 +494,14 @@ $(async function(){
 					//opcion = document.getElementById('adp-listsel');
 				}
 				//pintarRuta(minWalk, medWalk, maxWalk, minTran, medTran, maxTran, dens, route);
-				pintarRuta();
+			//	pintarRuta();
 	
-				$('#right-panel').css('display', 'block');
-				$('#map').css('width','60%');
-				$('#map').css('margin-left','6%');
-				$('#guardar').css('display', 'block');
-				
-				//console.log("gMaps : ", gMap);
-				//console.log("rutasAlternas[0] : ", rutasAlternas[0]);
+				$('#right-panel').css('display', 'block').css('width','33%');
+				$('#map').css('width', '66%');
+				console.log("gMaps : ", gMap);
+				console.log("rutasAlternas[0] : ", rutasAlternas[0]);
 				panel = true;
-				await sleep(1000);
 				valorAnterior = document.getElementsByClassName('adp-listsel')[0].getAttributeNode('data-route-index').value;
-				
-				//console.log("VALOR ANTERIOR : ",valorAnterior);
-				
 			} else {
 				console.error('Directions request failed due to ' + status);
 			}
@@ -441,15 +518,15 @@ $(async function(){
 				for (var j = 0; j < results.length; j++) {
 					var element = results[j];
 					var distance = element.distance.text;
-					//console.log("Distance : ", distance);
+					console.log("Distance : ", distance);
 					let dist = parseInt(element.distance.text.split(" ")[0]);
 					minDistancia = dist;
 					var duration = element.duration.text;
-					//console.log("Duration : ", duration);
+					console.log("Duration : ", duration);
 					var from = origins[i];
-					//console.log("From : ", from);
+					console.log("From : ", from);
 					var to = destinations[j];
-					//console.log("To : ", to);
+					console.log("To : ", to);
 				}
 			}
 
@@ -463,9 +540,9 @@ $(async function(){
 
 
 	function geocodeAddress(place, geocoder, map){
-		//console.log("GeocodeAddress");
+		console.log("GeocodeAddress");
 		if( $('#liOrigen').data('semafor') || $('#liDesti').data('semafor')){
-			//console.log("Por ratón");
+			console.log("Por ratón");
 			geocoder.geocode({'location':gLatLon}, function(results, status){
 				if (status == 'OK'){
 					/*console.log("REsultats : ");
@@ -491,7 +568,7 @@ $(async function(){
 							map: map,
 							label: labels[0],
 							position: results[0].geometry.location,
-							//icon: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+							icon: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
 						});
 					} else {
 						gMarkerDesti.setMap(null);
@@ -499,7 +576,7 @@ $(async function(){
 							map: map,
 							label: labels[1],
 							position: results[0].geometry.location,
-							//icon: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+							icon: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
 						});
 					}
 				} else {
@@ -517,8 +594,8 @@ $(async function(){
 
 		console.log("Guardar");
 		let opcion = document.getElementsByClassName('adp-listsel')[0].getAttributeNode('data-route-index').value;
-		//console.log("Opcion : ", opcion);
-		let rutaSel = rutasAlternas[0].directions.routes[opcion].legs;
+		console.log("Opcion : ", opcion);
+		/*let rutaSel = rutasAlternas[0].directions.routes[opcion].legs;
 
 		let startLoc = rutaSel[0].start_location.toString();
 		let endLoc = rutaSel[0].end_location.toString();
@@ -555,43 +632,7 @@ $(async function(){
 			"steps" : path2
 
 		}
-		console.log(route);
-		
-		$.ajax({
-			url: 'save',
-			type: 'POST',
-			contentType: 'json',
-			data: JSON.stringify(route),
-			success: function(data){
-				alert("Ruta emmagatzemada correctament");
-			},
-			error: function(data, status, error){
-				alert("S'ha produït un error a l'hora d'emmagatzemar la ruta");
-			}
-		});
-
-		/*
-		function test(route){
-		$.ajax({
-			url: "test",
-			type:'POST',
-			contentType: "json",
-			data: JSON.stringify(route),
-			success: function(datos){
-				//console.log("GOOID");
-				//console.log(datos);
-				let obj = JSON.parse(datos);
-				densitats = obj;
-			}, error: function(datos, status, error){
-				//console.log("BAD BOYS");
-				//console.log(datos);
-				//console.log(status);
-				//console.log(error);
-			}
-		});
-	
-	}
-		*/
+		console.log(route);*/
 
 	});
 	
@@ -611,7 +652,7 @@ $(async function(){
 
 	//function pintarRuta(minWalk, medWalk, maxWalk, minTran, medTran, maxTran, densitat, route){
 	function pintarRuta(){
-		/*console.log("Pintar Ruta");
+		console.log("Pintar Ruta");
 	
 		console.log("minWalk : ", minWalk);
 		console.log("medWalk : ", medWalk);
@@ -619,36 +660,60 @@ $(async function(){
 		console.log("minTran : ", minTran);
 		console.log("medTran : ", medTran);
 		console.log("maxTran : ", maxTran);
-		console.log("densitats : ", densitats);*/
+		console.log("densitats : ", densitats);
 
 		$.each(polyLineRoute, function(ind, val){
-			/*console.log("polyLineRoute ind : ", ind);
-			console.log("polyLineRoute val : ", val);*/
+			console.log("polyLineRoute ind : ", ind);
+			console.log("polyLineRoute val : ", val);
 			val.setOptions({map: null});
 		});
 		polyLineRoute = [];
-		//console.log(densitats);
+		console.log(densitats);
 		let dens = new Array();
 		
 		$.each(densitats, function(ind, val){
-			//console.log("VALOR DENSITATS : ",val);
+			console.log("VALOR DENSITATS : ",val);
 			dens.push(val);
 		});
+		
+		let dens2 = [
+					[{
+						0: "0.2238716520976601",
+						1: "0.06919529481122949",
+						2: "0.19389344594940222" 
+					}],
+					[{
+						0: "0.131574005302513",
+						1: "0.045565162485712345",
+						2: "0.1883963265151703" 
+					}],
+					[{
+						0: "0.044774481181203606",
+						1: "0.08365796829168337"
+					}],
 					
+					
+					[{
+						0: "0.1942329273932018",
+						1: "0.0871564305709073",
+						2: "0.19412271264529868" 
+					}]
+				];
+				
 
-		/*console.log("Densitats : ", densitats);
+		console.log("Densitats : ", densitats);
 		console.log("Dens : ", dens);
-		console.log("Dens 2 : ", dens2);*/
+		console.log("Dens 2 : ", dens2);
 
 		let ind = rutasAlternas[0].getRouteIndex();
-		//console.log(ind);
+		console.log(ind);
 		let index = 0;
-		//console.log(route);
+		console.log(route);
 		for (let j = 0; j<route.steps[ind].length; j++){
-		//	console.log(route.steps[ind][j][0]);
-		//	console.log(route.steps[ind][j][0]);
+			console.log(route.steps[ind][j][0]);
+			console.log(route.steps[ind][j][0]);
 			if(route.steps[ind][j][0].travel_mode == "WALKING"){
-		//		console.log("WALKING");
+				console.log("WALKING");
 				if (parseFloat(dens[ind][index][index]) > minWalk && parseFloat(dens[ind][index][index]) < medWalk){
 					color = GREEN;
 				}else if (parseFloat(dens[ind][index][index]) >= medWalk && parseFloat(dens[ind][index][index]) < maxWalk) {
@@ -657,7 +722,7 @@ $(async function(){
 					color = RED;
 				}
 			} else {
-		//		console.log("TRANSIT");
+				console.log("TRANSIT");
 				if (parseFloat(dens[ind][index][index]) >= minTran && parseFloat(dens[ind][index][index]) < medTran){
 					color = GREEN;
 				}else if (parseFloat(dens[ind][index][index]) >= medTran && parseFloat(dens[ind][index][index]) < maxTran) {
@@ -666,7 +731,7 @@ $(async function(){
 					color = RED;
 				}
 			}
-		//	console.log("Valor : ", dens[ind][index][index]);
+			console.log("Valor : ", dens[ind][index][index]);
 			
 			let paths2 = new Array();
 
@@ -686,7 +751,82 @@ $(async function(){
 			polyLineRoute.push(p);
 			index += 1;
 		}
+	//	console.log(colours);
+		/*
+		let index = 0;
+		for (let j = 0; j<route.steps[index].length; j++){
+		
+			if(route.steps[index][j][0].travel_mode == "WALKING"){
+				if (parseFloat(dens[ind][index]) > minWalk && parseFloat(dens[ind][index]) < medWalk){
+					color = GREEN;
+				}else if (parseFloat(dens[ind][index]) >= medWalk && parseFloat(dens[ind][index]) < maxWalk) {
+					color = ORANGE;
+				} else {
+					color = RED;
+				}
+			} else {
+				if (parseFloat(dens[ind][index]) > minTran && parseFloat(dens[ind][index]) < minTran){
+					color = GREEN;
+				}else if (parseFloat(dens[ind][index]) >= minTran && parseFloat(dens[ind][index]) < minTran) {
+					color = ORANGE;
+				} else {
+					color = RED;
+				}
+			}
+		}	
+		
 
+		console.log("dens : ", dens[ind]);
+
+		for (let i=0; i<rutasAlternas[ind].directions.routes[ind].legs[0].steps.length; i++){
+
+			
+			for (let j = 0; j<route.steps[index].length; j++){
+		
+				if(route.steps[index][j][0].travel_mode == "WALKING"){
+					if (parseFloat(dens[ind][index]) > minWalk && parseFloat(dens[ind][index]) < medWalk){
+						color = GREEN;
+					}else if (parseFloat(dens[ind][index]) >= medWalk && parseFloat(dens[ind][index]) < maxWalk) {
+						color = ORANGE;
+					} else {
+						color = RED;
+					}
+				} else {
+					if (parseFloat(dens[ind][index]) > minTran && parseFloat(dens[ind][index]) < minTran){
+						color = GREEN;
+					}else if (parseFloat(dens[ind][index]) >= minTran && parseFloat(dens[ind][index]) < minTran) {
+						color = ORANGE;
+					} else {
+						color = RED;
+					}
+				}
+				
+				let path = rutasAlternas[ind].directions.routes[ind].legs[0].steps[i].path;
+
+				console.log("Color : ", color);
+
+				let paths2 = new Array();
+
+				for (let b = 0; b < path.length; b++){
+					paths2.push(path[b]);
+				}
+
+				let p = new google.maps.Polyline({
+					path: paths2,
+					geodesic: true,
+					strokeColor: color,
+					strokeOpacity: 1.0,
+					strokeWeight: 5
+				});
+
+				p.setOptions({map: gMap});
+				
+				
+			}	
+			
+			
+
+		}*/
 	}
 
 	
@@ -698,8 +838,8 @@ $(async function(){
 
 	$.datepicker.regional["es"] = {
 		closeText: 'Cerrar',
-		prevText: '<Ant',
-		nextText: 'Sig>',
+		/*prevText: '<Ant',
+		nextText: 'Sig>',*/
 		currentText: 'Hoy',
 		monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
 		'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],

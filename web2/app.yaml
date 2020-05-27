@@ -1,4 +1,13 @@
+# [START gae_python37_custom_runtime]
 runtime: python37
+
+handlers:
+- url: /css
+  static_dir: static/css
+  
+- url: /js
+  static_dir: static/js
+ 
 env_variables:
 #  # Replace USER, PASSWORD, DATABASE, and CONNECTION_NAME with the
 # # values obtained when configuring your Cloud SQL instance.
@@ -9,3 +18,5 @@ env_variables:
   CLOUD_SQL_CONNECTION_NAME: ssmm-transport-python:europe-west1:ssmm-transport-database
   MYSQL_USER: root
   MYSQL_PASSWORD: vilarinyoputoamoenrobotica2020
+  
+# [END gae_python37_custom_runtime]
