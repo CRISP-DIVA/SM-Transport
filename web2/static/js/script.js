@@ -507,30 +507,36 @@ $(async function(){
 		$.each(densitats, function(ind, val){
 			dens.push(val);
 		});
-
+		
 		let ind = rutasAlternas[0].getRouteIndex();
+		valorAnterior = ind;
+		console.log("ind : ", ind);
 		let index = 0;
 		for (let j = 0; j<route.steps[ind].length; j++){
 			
 			if(route.steps[ind][j][0].travel_mode == "WALKING"){
 				if (minWalk == 0 && medWalk == 0 && maxWalk == 0){
 					color = GREEN;
-				} else if(parseFloat(dens[ind][index][index]) >= maxWalk){
-					color = RED;
-				}else if (parseFloat(dens[ind][index][index]) >= medWalk && parseFloat(dens[ind][index][index]) < maxWalk) {
-					color = ORANGE;
 				} else {
-					color = GREEN;
+					if(parseFloat(dens[ind][index][index]) >= maxWalk){
+						color = RED;
+					}else if (parseFloat(dens[ind][index][index]) >= medWalk && parseFloat(dens[ind][index][index]) < maxWalk) {
+						color = ORANGE;
+					} else {
+						color = GREEN;
+					}
 				}
 			} else {
 				if (minTran == 0 && medTran == 0 && maxTran == 0){
 					color = GREEN;
-				} else if(parseFloat(dens[ind][index][index]) >= maxTran){
-					color = RED;
-				}else if (parseFloat(dens[ind][index][index]) >= medTran && parseFloat(dens[ind][index][index]) < maxTran) {
-					color = ORANGE;
 				} else {
-					color = GREEN;
+					if(parseFloat(dens[ind][index][index]) >= maxTran){
+						color = RED;
+					} else if (parseFloat(dens[ind][index][index]) >= medTran && parseFloat(dens[ind][index][index]) < maxTran) {
+						color = ORANGE;
+					} else {
+						color = GREEN;
+					}
 				}
 			}
 
