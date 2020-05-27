@@ -536,7 +536,7 @@ $(async function(){
 			let path = new Array();
 			$.each(val.path, function(ind2, val2){
 				//path.push(val2.toString());
-				let tmp = val4.toString().split(",");
+				let tmp = val2.toString().split(",");
 				lat = tmp[0].split("(")[1];
 				lng = tmp[0].split(")")[0];
 				let latLng = {"latitud" : lat,
