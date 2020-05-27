@@ -27,7 +27,7 @@ def save_route():
   
     
    
-    current_time = "03:00:00"
+    current_time = "09:00:00"
     
     
     db = sqlalchemy.create_engine('mysql+pymysql://root:ssmm2020@localhost/ssmm_transport')
@@ -52,7 +52,7 @@ def save_route():
                     longituds.append(tram[2])
        
         
-        densitats = [d**2.5 for d in densitats]
+        densitats = [d**2 for d in densitats]
         
         plt.figure()
         img = plt.imread("mapita.png")

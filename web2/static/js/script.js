@@ -184,9 +184,9 @@ $(async function(){
 
 
 	};
-	
+
 	//await sleep(2000);
-	
+
 	$('#indata').click(function(){
 
         $.ajax({
@@ -224,7 +224,7 @@ $(async function(){
 				//console.log(error);
 			}
 		});
-	
+
 	}
 
 
@@ -289,7 +289,7 @@ $(async function(){
 				let path;
 				let path2;
 				let path3 = [];
-				
+
 
 				$.each(rutaSel, function(ind, val){
 					$.each(val, function(ind2, val2){
@@ -306,7 +306,7 @@ $(async function(){
 												   "longitud" : lng };
 									path.push(latLng);
 								});
-								
+
 								pathT.push({"travel_mode" : val3.travel_mode, "path":path});
 								path2.push(pathT);
 							});
@@ -330,19 +330,19 @@ $(async function(){
 				}
 				//console.log("ROUTE");
 				//console.log(route);
-				
+
 				test(route);
 				await sleep(7000);
 				$('.preloader').css('display', 'none');
 				$('#espera').css('display', 'none');
 				//console.log("Denstitats");
 				//console.log(densitats);
-								
+
 				maxWalk = 0;
 				minWalk = 100;
 				maxTran = 0;
 				minTran = 100;
-				
+
 				let index = 0;
 				$.each(densitats, function(ind, val){
 					let index2 = 0;
@@ -367,10 +367,10 @@ $(async function(){
 					}
 					index += 1;
 				});
-								
+
 				medWalk = (maxWalk+minWalk) / 2;
 				medTran = (maxTran+minTran) / 2;
-				
+
 
 				rutasAlternas = [];
 				gMarkerOrigen.setMap(null);
@@ -389,7 +389,7 @@ $(async function(){
 	//				console.log(typeof dist);
 	//				console.log("minDist + 5 ", minDistancia + 5);
 	//				console.log("dist > minDistancia + 5" , dist > minDistancia + 5);
-	
+
 					if(dist < minDistancia + 5){
 						/*rutasAlternas[i] = new google.maps.DirectionsRenderer({
 											directions: response,
@@ -403,7 +403,7 @@ $(async function(){
 													polylineOptions: { visible: false }
 												});
 						rutasAlternas.push(gDirectionsRenderer);
-	
+
 					}
 					rutasAlternas[0].setMap(gMap);
 					rutasAlternas[0].setPanel(document.getElementById('right-panel'));
@@ -411,20 +411,20 @@ $(async function(){
 				}
 				//pintarRuta(minWalk, medWalk, maxWalk, minTran, medTran, maxTran, dens, route);
 				pintarRuta();
-	
+
 				$('#right-panel').css('display', 'block');
 				$('#map').css('width','60%');
 				$('#map').css('margin-left','6%');
 				$('#guardar').css('display', 'block');
-				
+
 				//console.log("gMaps : ", gMap);
 				//console.log("rutasAlternas[0] : ", rutasAlternas[0]);
 				panel = true;
 				await sleep(1000);
 				valorAnterior = document.getElementsByClassName('adp-listsel')[0].getAttributeNode('data-route-index').value;
-				
+
 				//console.log("VALOR ANTERIOR : ",valorAnterior);
-				
+
 			} else {
 				console.error('Directions request failed due to ' + status);
 			}
@@ -458,8 +458,8 @@ $(async function(){
 			console.error("Error: " + status);
 		}
 	}
-	
-	
+
+
 
 
 	function geocodeAddress(place, geocoder, map){
@@ -508,10 +508,10 @@ $(async function(){
 			});
 		}
 	}
-	
-	
-	
-	
+
+
+
+
 
 	$('#guardar').click(function(){
 
@@ -561,12 +561,12 @@ $(async function(){
 			"steps" : path2
 
 		}
-		console.log(route);
-		
-		/*$.ajax({
-			url: 'save',
-			type: 'POST',
-			contentType: 'json',
+		console.log(JSON.stringify(route));
+
+		$.ajax({
+			url: "save",
+			type:'POST',
+			contentType: "json",
 			data: JSON.stringify(route),
 			success: function(data){
 				alert("Ruta emmagatzemada correctament");
@@ -598,12 +598,12 @@ $(async function(){
 				//console.log(error);
 			}
 		});
-	
+
 	}
 		*/
 
 	});
-	
+
 	function actualizar(){
 		if(panel){
 			if (document.getElementsByClassName('adp-listsel')[0].getAttributeNode('data-route-index').value != valorAnterior){
@@ -621,7 +621,7 @@ $(async function(){
 	//function pintarRuta(minWalk, medWalk, maxWalk, minTran, medTran, maxTran, densitat, route){
 	function pintarRuta(){
 		/*console.log("Pintar Ruta");
-	
+
 		console.log("minWalk : ", minWalk);
 		console.log("medWalk : ", medWalk);
 		console.log("maxWalk : ", maxWalk);
@@ -638,12 +638,12 @@ $(async function(){
 		polyLineRoute = [];
 		//console.log(densitats);
 		let dens = new Array();
-		
+
 		$.each(densitats, function(ind, val){
 			//console.log("VALOR DENSITATS : ",val);
 			dens.push(val);
 		});
-					
+
 
 		/*console.log("Densitats : ", densitats);
 		console.log("Dens : ", dens);
@@ -676,14 +676,14 @@ $(async function(){
 				}
 			}
 		//	console.log("Valor : ", dens[ind][index][index]);
-			
+
 			let paths2 = new Array();
 
 			for (let b = 0; b < route.steps[ind][j][0].path.length; b++){
 				paths2.push( new google.maps.LatLng(route.steps[ind][j][0].path[b].latitud,route.steps[ind][j][0].path[b].longitud));
-				
+
 			}
-			
+
 			let p = new google.maps.Polyline({
 					path: paths2,
 					geodesic: true,
@@ -698,11 +698,11 @@ $(async function(){
 
 	}
 
-	
+
 	function sleep(ms) {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
-	
+
 	//
 
 	$.datepicker.regional["es"] = {
