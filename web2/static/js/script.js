@@ -553,8 +553,6 @@ $(async function(){
 
 	}
 	
-	
-	
 	async function neteja(){
 		$('#espera').css('display', 'block');
 		$('.preloader').css('display', 'block');
