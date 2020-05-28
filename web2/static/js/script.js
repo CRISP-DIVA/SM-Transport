@@ -1,8 +1,10 @@
-$(async function(){
+$(function(){
 	// Constantes
 	const RED = "#FF0000";
 	const ORANGE = "#E99400";
+	const YELOW = "#E6D83E";
 	const GREEN = "#00FF00";
+	colors = [GREEN, YELOW, ORANGE, RED];
 
 	// Bloquear botón derecho ratón en página
 	$(document).bind("contextmenu", function(e){
@@ -26,7 +28,7 @@ $(async function(){
 	var rutasAlternas;
 	var labels = 'AB';
 	var labelIndex = 0;
-	var colors = ['red', 'blue', 'green', 'black', 'white'];
+	//var colors = ['red', 'blue', 'green', 'black', 'white'];
 	var coords = [];
 	var minDistancia = 0;
 	var densitats;
@@ -269,11 +271,10 @@ $(async function(){
 					}
 
 					test(route);
-					await sleep(7000);
+					await sleep(9000);
 					$('.preloader').css('display', 'none');
 					$('#espera').css('display', 'none');
-
-					maxWalk = 0;
+					/*maxWalk = 0;
 					minWalk = 100;
 					maxTran = 0;
 					minTran = 100;
@@ -304,7 +305,7 @@ $(async function(){
 					});
 
 					medWalk = (maxWalk+minWalk) / 2;
-					medTran = (maxTran+minTran) / 2;
+					medTran = (maxTran+minTran) / 2;*/
 
 					rutasAlternas = [];
 					gMarkerOrigen.setMap(null);
@@ -483,8 +484,8 @@ $(async function(){
 				console.log(error);
 			}
 		});
-		alert("TOT CORRECTE");
-		neteja();
+		//alert("TOT CORRECTE");
+		//neteja();
 
 	});
 
@@ -513,8 +514,13 @@ $(async function(){
 		console.log("ind : ", ind);
 		let index = 0;
 		for (let j = 0; j<route.steps[ind].length; j++){
-			
-			if(route.steps[ind][j][0].travel_mode == "WALKING"){
+			//console.log("dens[ind][j][index] : ", typeof dens[ind][j][index]);
+			//color = dens[ind][j][index];
+			//console.log("colors[0] : ", colors[dens[ind][j][index]]);
+			color = colors[dens[ind][j][index]];
+			//console.log(dens[ind][j][index]);
+			//console.log(color);
+			/*if(route.steps[ind][j][0].travel_mode == "WALKING"){
 				if (minWalk == 0 && medWalk == 0 && maxWalk == 0){
 					color = GREEN;
 				} else {
@@ -538,7 +544,7 @@ $(async function(){
 						color = GREEN;
 					}
 				}
-			}
+			}*/
 
 			let paths2 = new Array();
 			for (let b = 0; b < route.steps[ind][j][0].path.length; b++){

@@ -1,6 +1,7 @@
 # [START gae_python37_custom_runtime]
 runtime: python37
 
+
 handlers:
 - url: /css
   static_dir: static/css
