@@ -41,7 +41,7 @@ def hora_tramo(request):
     now = now.astimezone(timezone2)
     data = 0
     data_arr = []
-    current_time = now.strftime("09:00:00")
+    current_time = now.strftime("02:00:00")
     db = sqlalchemy.create_engine('mysql+pymysql://root:ssmm2020@localhost/ssmm_transport')
     
     with db.connect() as conn:
