@@ -28,7 +28,6 @@ $(function(){
 	var rutasAlternas;
 	var labels = 'AB';
 	var labelIndex = 0;
-	//var colors = ['red', 'blue', 'green', 'black', 'white'];
 	var coords = [];
 	var minDistancia = 0;
 	var densitats;
@@ -43,31 +42,46 @@ $(function(){
 	var panel = false;
 	var valorAnterior;
 
+	/**
+	* Función ancla de la aplicación web.
+	* Comprueba que se ha activado el permiso de geolocalización.
+	*  -> success: Función que es llamada si está habilitado
+	*	           el permiso.
+	*  -> error: Función que es llamada si no está habilitado
+	*			 el permiso.
+	*/
 	navigator.geolocation.getCurrentPosition(success, error);
 
 	function error(){
 		alert("No esta habilitado la geolocalización");
 	};
-
+	/**
+	* Función que permite la interacción con la API
+    * de Google Maps JavaScript.
+	* . position: Variable para obtener las cooredenadas servidas
+	*             por el navegador.
+	*/
 	function success(position) {
 
 		gLatOrigen = position.coords.latitude;
 		gLngOrigen = position.coords.longitude;
-
-		var geocoder = new google.maps.Geocoder();
-
+		
+		// Creación objeto LatLng de Google Maps que contiene las
+		// coordenadas obtenidas por el navegador.
 		gLatLon = new google.maps.LatLng(gLatOrigen,gLngOrigen);
-
+		
+		var geocoder = new google.maps.Geocoder();
 		gDirectionsRenderer = new google.maps.DirectionsRenderer;
 		gDirectionsService = new google.maps.DirectionsService;
 		gService = new google.maps.DistanceMatrixService();
-
+		
+		// Configuración estilo del mapa
 		var myStyles = [{
 			featureType: 'poi',
 			elementType: 'labels',
 			stylers: [{ visibility: 'off' }]
 		}];
-
+		// Configuración del Mapa
 		var objConfig = {
 			zoom : 17,
 			center: gLatLon,
@@ -76,7 +90,7 @@ $(function(){
 			fullscreenControl: false,
 			styles: myStyles
 		}
-
+		// Creación objecto mapa
 		gMap = new google.maps.Map(map, objConfig);
 
 		var transitLayer = new google.maps.TransitLayer();
@@ -92,14 +106,22 @@ $(function(){
 			map:gMap
 		});
 
-		gMap.addListener('touchstart', obrirMenu2);
 
-		function obrirMenu2(ev){
-			alert(ev.touches);
-		}
-
+//		gMap.addListener('touchstart', obrirMenu2);
+		/**
+		* Función a la espera a un clic derecho del ratón
+		* encima del mapa que abre un pequeño menú con
+		* las opciones de seleccionar origen y destino.
+		*  -> obrirMenu: Función que es llamada
+		*/
 		gMap.addListener('rightclick', obrirMenu);
 
+		/**
+		* Función para habilitar y mostrar el menú
+		* de selección origen y destino.
+		* . mapsMouseEvent: Variable para obtener las cooredenadas
+		*					del mapa.
+		*/
 		function obrirMenu(mapsMouseEvent) {
 
 			$('#contextMenu').css('display','block');
@@ -110,6 +132,15 @@ $(function(){
 			gLatLon = mapsMouseEvent.latLng;
 		}
 
+		/**
+		* Función que se realiza cuando se cliquea en la opción
+		* de origen.
+		* Se crea un marcador con la nueva posición de origen.
+		* Se consigue transformar las coordenadas en una dirección
+		* leible para el usuario.
+		* Si el usuario ya a seleccionado un origen y un destino se habilita 
+		* el botón para poder hacer la consulta.
+		*/
 		$('#liOrigen').click(function(){
 			$('#liOrigen').data('semafor', true);
 			gMarkerOrigen.setMap(null);
@@ -128,7 +159,15 @@ $(function(){
 				$('#enviar').attr('disabled', false);
 			}
 		});
-
+		/**
+		* Función que se realiza cuando se cliquea en la opción
+		* de destino.
+		* Se crea un marcador con la nueva posición de destino.
+		* Se consigue transformar las coordenadas en una dirección
+		* leible para el usuario.
+		* Si el usuario ya a seleccionado un origen y un destino se habilita 
+		* el botón para poder hacer la consulta.
+		*/
 		$('#liDesti').click(function(){
 			$('#liDesti').data('semafor', true);
 			gMarkerDesti.setMap(null);
@@ -144,11 +183,19 @@ $(function(){
 				$('#enviar').attr('disabled', false);
 			}
 		});
-
+		/**
+		* Función para cerrar el menú en el mapa con el botón
+		* izquierdo del ratón
+		*/
 		gMap.addListener('click', function(mapsMouseEvent){
 			$('#contextMenu').css('display','none');
 		});
-
+		/**
+		* Función que actualiza el mapa y opciones del origen
+		* cuando el focus en el input para el origen es cambiado.
+		* Si el usuario ya a seleccionado un origen y un destino se habilita 
+		* el botón para poder hacer la consulta.
+		*/
 		$('#origen').blur(function(){
 			if ($('#origen').val().length > 0) {
 				geocodeAddress('#origen',geocoder, gMap);
@@ -157,7 +204,12 @@ $(function(){
 				}
 			}
 		});
-
+		/**
+		* Función que actualiza el mapa y opciones del destino
+		* cuando el focus en el input para el destino es cambiado.
+		* Si el usuario ya a seleccionado un origen y un destino se habilita 
+		* el botón para poder hacer la consulta.
+		*/
 		$('#desti').blur(function(){
 			if ($('#desti').val().length > 0) {
 				geocodeAddress('#desti', geocoder, gMap);
@@ -170,7 +222,16 @@ $(function(){
 	};
 
 	
-
+	/**
+	* Función que obtiene a partir de las opciones seleccionads
+	* de origen, destino, hora y fecha las rutas. Cada ruta puede 
+	* estar representada por un camino camino que se hace andando,
+	* o por el tramo que se realiza con transporte público (tren, metro, bus).
+	* La infromación de las rutas obtenidas por la API Direccions, es enviada al
+	* a una Cloud Function que la procesará y retornarà un JSON con con un número
+	* que representa la densidad para esa ruta y cada tramo que contiene.
+	* 
+	*/
 	$('#enviar').click(function(){
 		if ($('#origen').val().length > 0 || $('#desti').val().length > 0) {
 			$('#espera').css('display', 'block');
@@ -236,7 +297,7 @@ $(function(){
 						$.each(val, function(ind2, val2){
 							path2 = [];
 							if(ind2 == "legs"){
-								$.each(val2[0].steps, function(ind3, val3){                  // travel_mode + path
+								$.each(val2[0].steps, function(ind3, val3){ 
 									pathT = new Array();
 									path = new Array();
 									$.each(val3.path, function(ind4, val4){
@@ -269,48 +330,26 @@ $(function(){
 						"steps" : path3
 
 					}
-
-					test(route);
+					/* Llamada a la función que contiene una llamada AJAX 
+					   para mandar el JSON personalizado a una función PYTHON
+					   del servidor que realiza una llamada a la Cloud Function
+					   pertinente y retornarà las densidades de las rutas.
+					*/
+					getDensitat(route);
+					// La espera de 9 segundos se realiza para esperar la respuesta del servidor.
 					await sleep(9000);
 					$('.preloader').css('display', 'none');
 					$('#espera').css('display', 'none');
-					/*maxWalk = 0;
-					minWalk = 100;
-					maxTran = 0;
-					minTran = 100;
-
-					let index = 0;
-					$.each(densitats, function(ind, val){
-						let index2 = 0;
-						for (let j = 0; j<route.steps[index].length; j++){
-							if(route.steps[index][j][0].travel_mode == "WALKING"){
-								if (parseFloat(val[j][j]) > maxWalk){
-									maxWalk = parseFloat(val[j][j]);
-								}else {
-									if (  val[j][j] < minWalk) {
-										minWalk = parseFloat(val[j][j]);
-									}
-								}
-							} else {
-								if (parseFloat(val[j][j]) > maxTran){
-									maxTran = parseFloat(val[j][j]);
-								} else {
-									if ( val[j][j] < minTran) {
-										minTran = parseFloat(val[j][j]);
-									}
-								}
-							}
-						}
-						index += 1;
-					});
-
-					medWalk = (maxWalk+minWalk) / 2;
-					medTran = (maxTran+minTran) / 2;*/
 
 					rutasAlternas = [];
 					gMarkerOrigen.setMap(null);
 					gMarkerDesti.setMap(null);
-
+					/* Recorrer todas las rutas, si hay alguna de ellas que tenga una distancia
+					   superior a la mejor distancia (seleccionada por la API Direcctions Matrix)
+					   más 5 se descarta, para las que passan el baremo, se les asigna un indice
+					   mientras son creadas. Este indice es utilizado para saber que ruta 
+					   es la escojida.
+					*/
 					for (var i = 0; i < response.routes.length; i++){
 						let dist = parseInt(response.routes[i].legs[0].distance.text.split(" ")[0]);
 						if(dist < minDistancia + 5){
@@ -343,7 +382,11 @@ $(function(){
 			});
 		}
 	});
-
+	/**
+	* Función para obtener los resultados de la API Direccion Matrix.
+	* . response: Variable que contiene la respuesta de la API
+	* . status: Valor de retorno de la petición.
+	*/
 	function callback(response, status){
 		if(status == 'OK'){
 			var origins = response.originAddresses;
@@ -365,10 +408,15 @@ $(function(){
 			console.error("Error: " + status);
 		}
 	}
-
-	function test(route){
+	/**
+	* Función con una llamada AJAX que hace una llamada al fichero
+	* getDensitat.py del servidor, el cual realiza una llamada 
+	* a la Cloud Function.
+	* . route: JSON personalizado con la información de las rutas.
+	*/
+	function getDensitat(route){
 		$.ajax({
-			url: "test",
+			url: "getDensitat",
 			type:'POST',
 			contentType: "json",
 			data: JSON.stringify(route),
@@ -381,7 +429,10 @@ $(function(){
 		});
 
 	}
-
+	/**
+	* Función para obtener a partir de coordenadas como de direcciones
+	* los puntos de origen y destino.
+	*/
 	function geocodeAddress(place, geocoder, map){
 		if( $('#liOrigen').data('semafor') || $('#liDesti').data('semafor')){
 			geocoder.geocode({'location':gLatLon}, function(results, status){
@@ -422,7 +473,9 @@ $(function(){
 			});
 		}
 	}
-
+	/**
+	* Función para almacenar en la base de datos la ruta seleccionada por el usuario.
+	*/
 	$('#guardar').click(function(){
 
 		let opcion = document.getElementsByClassName('adp-listsel')[0].getAttributeNode('data-route-index').value;
@@ -484,11 +537,11 @@ $(function(){
 				console.log(error);
 			}
 		});
-		//alert("TOT CORRECTE");
-		//neteja();
 
 	});
-
+	/**
+	* Función que comprueba si es necesario pintar una ruta.
+	*/
 	function actualizar(){
 		if(panel){
 			if (document.getElementsByClassName('adp-listsel')[0].getAttributeNode('data-route-index').value != valorAnterior){
@@ -496,7 +549,7 @@ $(function(){
 			}
 		}
 	}
-	
+	// Función que pinta la ruta según el color de densidad.
 	function pintarRuta(){
 		
 		$.each(polyLineRoute, function(ind, val){
@@ -514,37 +567,8 @@ $(function(){
 		console.log("ind : ", ind);
 		let index = 0;
 		for (let j = 0; j<route.steps[ind].length; j++){
-			//console.log("dens[ind][j][index] : ", typeof dens[ind][j][index]);
-			//color = dens[ind][j][index];
-			//console.log("colors[0] : ", colors[dens[ind][j][index]]);
+
 			color = colors[dens[ind][j][index]];
-			//console.log(dens[ind][j][index]);
-			//console.log(color);
-			/*if(route.steps[ind][j][0].travel_mode == "WALKING"){
-				if (minWalk == 0 && medWalk == 0 && maxWalk == 0){
-					color = GREEN;
-				} else {
-					if(parseFloat(dens[ind][index][index]) >= maxWalk){
-						color = RED;
-					}else if (parseFloat(dens[ind][index][index]) >= medWalk && parseFloat(dens[ind][index][index]) < maxWalk) {
-						color = ORANGE;
-					} else {
-						color = GREEN;
-					}
-				}
-			} else {
-				if (minTran == 0 && medTran == 0 && maxTran == 0){
-					color = GREEN;
-				} else {
-					if(parseFloat(dens[ind][index][index]) >= maxTran){
-						color = RED;
-					} else if (parseFloat(dens[ind][index][index]) >= medTran && parseFloat(dens[ind][index][index]) < maxTran) {
-						color = ORANGE;
-					} else {
-						color = GREEN;
-					}
-				}
-			}*/
 
 			let paths2 = new Array();
 			for (let b = 0; b < route.steps[ind][j][0].path.length; b++){
@@ -564,7 +588,7 @@ $(function(){
 		}
 
 	}
-	
+	// Función que limpia cualquier dato que el usuario puediera haber introducido en la página.
 	async function neteja(){
 		$('#espera').css('display', 'block');
 		$('.preloader').css('display', 'block');
