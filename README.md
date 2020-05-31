@@ -27,5 +27,13 @@ En aquesta carpeta podem trobar els scrips necessaris per tal de que funcioni el
 
 - Database Creation_Sql conté el codi en sql encarregat de generar les taules de la nostra base de dades per poder guardar les dades dels usuaris i de les rutes o trams associats a aquest.
 
+- Prova_distance_traffic.py va ser una prova per veure com funcionaven les apis de Google maps, que genera punts aleatoris en el mapaa partir de dels barris de Barcelona.
+
+- Watermark.py es un petit script obtingut d'internet per a afegir una marca d'aigua a les imatges amb pil
+
+- Save_route.py es crida una vegada l'usuari fa click a botó Guardar Ruta que hi ha al portal web, i s'encarrega d'agafar la ruta que ha agafat l'usuari per tenir-la en compte per a futurs càlcus de la densitat.
+
+- Gen_dens.py es crida una vegada que l'usuari fa click al botó de Buscar Ruta al portal web, i s'encarrega de, a partir de la ruta que l'usuari ha seleccionat, trobar el trams pertinents d'aquesta ruta i la seva densitat, categoritzada amb el color corresponent per nivell de densitat, i crear el JSON que es retorna a la web.
+
 
 
