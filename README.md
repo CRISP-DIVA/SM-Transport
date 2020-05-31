@@ -5,6 +5,8 @@ En aquest repositori trobarem tots els arxius necessaris perque la nostra aplica
 ### APP
 Primer de tot a la carpeta app trobarem el arxius de configuració de l'aplicació així com el main.py que es comunica amb les funcions de cloud que implementen les funcionalitats.
 
+En la carpeta de templates/web trobem els arxius necessaris per crear el nostre portal web, i a la carpeta static podem trobar els fitxers css i javascript (que serveixen per comunicar-nos amb la part cloud de l'aplicació).
+
 ### Datasets
 A datasets trobem els csv necessaris per tal de simular lo més proper a la realitat possibles rutes introduïdes pels usuaris. Per tal de fer axiò s'utilitzen datasets de la densitat de població de Barcelona per distrites i la densitat del trànsit per hores per tal de generar el random_user_data.
 
